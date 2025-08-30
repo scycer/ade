@@ -1,0 +1,1523 @@
+---
+library: vadimdemedes/ink
+created_by: docfork.com
+source: https://github.com/vadimdemedes/ink
+commit: d645e93
+updated_at: 07/30/2025 08:59:03 AM UTC
+---
+
+title: Installing Ink and React
+description: Demonstrates installing `ink` and `react` using npm. This is the first step to using Ink in a command-line application.
+source: readme.md#_snippet_0
+
+language: sh
+code:
+```
+npm install ink react
+```
+
+---
+
+title: Running an Ink Example
+description: Demonstrates how to execute example scripts within an Ink project using `npm run example`.  It specifies the command format and includes an example showing how to run the `borders` example.
+source: readme.md#_snippet_0
+
+language: bash
+code:
+```
+npm run example examples/[example name]
+# e.g. npm run example examples/borders
+```
+
+---
+
+title: Using Ink to Render a Counter Component
+description: Demonstrates creating a simple counter component using `react` and rendering it with `ink`. The `import` statements bring in necessary modules from `react` and `ink`, and the `render` function attaches the component to the terminal.
+source: readme.md#_snippet_1
+
+language: jsx
+code:
+```
+import React, {useState, useEffect} from 'react';
+import {render, Text} from 'ink';
+
+const Counter = () => {
+	const [counter, setCounter] = useState(0);
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setCounter(previousCounter => previousCounter + 1);
+		}, 100);
+
+		return () => {
+			clearInterval(timer);
+		};
+	}, []);
+
+	return <Text color="green">{counter} tests passed</Text>;
+};
+
+render(<Counter />);
+```
+
+---
+
+title: Creating a Basic Ink Component
+description: Demonstrates creating a basic Ink component that renders the text "Hello World". The `import` statements bring in necessary modules from `react` and `ink`, and the `render` function attaches the component to the terminal.
+source: readme.md#_snippet_3
+
+language: jsx
+code:
+```
+import React from 'react';
+import {render, Text} from 'ink';
+
+const Demo = () => <Text>Hello World</Text>;
+
+render(<Demo />);
+```
+
+---
+
+title: Using Usefocus Hook with Ink
+description: Demonstrates how to use the `useFocus` hook in Ink to make a component focusable. The component will display 'I am focused' when it has focus, and 'I am not focused' otherwise. This allows users to navigate through components using <kbd>Tab</kbd>.
+source: readme.md#_snippet_0
+
+language: jsx
+code:
+```
+import {render, useFocus, Text} from 'ink';
+
+const Example = () => {
+	const {isFocused} = useFocus();
+	return <Text>{isFocused ? 'I am focused' : 'I am not focused'}</Text>;
+};
+
+render(<Example />);
+```
+
+---
+
+title: Rendering Static Items with Index
+description: Demonstrates how to render a list of items using the `Static` component, accessing both the item and its index within the array. The `key` prop is correctly assigned to the root component within the mapping function.
+source: readme.md#_snippet_0
+
+language: jsx
+code:
+```
+<Static items={['a', 'b', 'c']}>
+	{(item, index) => {
+		// This function is called for every item in ['a', 'b', 'c']
+		// `item` is 'a', 'b', 'c'
+		// `index` is 0, 1, 2
+		return (
+			<Box key={index}>
+				<Text>Item: {item}</Text>
+			</Box>
+		);
+	}}
+</Static>
+```
+
+---
+
+title: Rendering a Box With Text And Margin
+description: Demonstrates basic usage of the `<Box>` and `<Text>` components from the `ink` library to render a box with a specified margin containing text. It imports `render`, `Box`, and `Text` from `ink` and uses them to create a simple layout.
+source: readme.md#_snippet_5
+
+language: jsx
+code:
+```
+import {render, Box, Text} from 'ink';
+
+const Example = () => (
+	<Box margin={2}>
+		<Text>This is a box with margin</Text>
+	</Box>
+);
+
+render(<Example />);
+```
+
+---
+
+title: Testing Ink Component Using Ink-Testing-Library
+description: Demonstrates how to test an Ink component using `ink-testing-library`. It renders a simple component and asserts the rendered output using `lastFrame()`.
+source: readme.md#_snippet_10
+
+language: jsx
+code:
+```
+import React from 'react';
+import {Text} from 'ink';
+import {render} from 'ink-testing-library';
+
+const Test = () => <Text>Hello World</Text>;
+const {lastFrame} = render(<Test />);
+
+lastFrame() === 'Hello World'; //=> true
+```
+
+---
+
+title: Transforming Text Output - Ink
+description: Demonstrates how to use the `Transform` component to modify the string output of its children. The `transform` prop takes a function that receives the output string and returns the transformed string, in this case, converting the text to uppercase.
+source: readme.md#_snippet_1
+
+language: jsx
+code:
+```
+import {render, Transform} from 'ink';
+
+const Example = () => (
+	<Transform transform={output => output.toUpperCase()}>
+		<Text>Hello World</Text>
+	</Transform>
+);
+
+render(<Example />);
+```
+
+---
+
+title: Styling Borders with BorderStyle - React
+description: Demonstrates the usage of different border styles available in Ink's `<Box>` component. It showcases `single`, `double`, `round`, `bold`, `singleDouble`, `doubleSingle`, and `classic` border styles. This allows users to customize the appearance of their Ink components with various border designs.
+source: readme.md#_snippet_0
+
+language: jsx
+code:
+```
+<Box flexDirection="column">
+	<Box>
+		<Box borderStyle="single" marginRight={2}>
+			<Text>single</Text>
+		</Box>
+
+		<Box borderStyle="double" marginRight={2}>
+			<Text>double</Text>
+		</Box>
+
+		<Box borderStyle="round" marginRight={2}>
+			<Text>round</Text>
+		</Box>
+
+		<Box borderStyle="bold">
+			<Text>bold</Text>
+		</Box>
+	</Box>
+
+	<Box marginTop={1}>
+		<Box borderStyle="singleDouble" marginRight={2}>
+			<Text>singleDouble</Text>
+		</Box>
+
+		<Box borderStyle="doubleSingle" marginRight={2}>
+			<Text>doubleSingle</Text>
+		</Box>
+
+		<Box borderStyle="classic">
+			<Text>classic</Text>
+		</Box>
+	</Box>
+</Box>
+```
+
+---
+
+title: Adding Newlines with Newline - React
+description: Demonstrates how to use the `<Newline>` component within a `<Text>` component to insert a newline character. It imports the necessary components from `ink` and then uses `<Newline />` to separate two `<Text>` components onto different lines.
+source: readme.md#_snippet_13
+
+language: jsx
+code:
+```
+import {render, Text, Newline} from 'ink';
+
+const Example = () => (
+	<Text>
+		<Text color="green">Hello</Text>
+		<Newline />
+		<Text color="red">World</Text>
+	</Text>
+);
+
+render(<Example />);
+```
+
+---
+
+title: Utilizing Spacer for Flexible Layout - React
+description: Demonstrates the usage of `<Spacer>` to create flexible layouts in Ink. It imports the necessary components from `ink` and then uses `<Spacer />` within a `<Box>` to push elements to opposite sides.
+source: readme.md#_snippet_14
+
+language: jsx
+code:
+```
+import {render, Box, Text, Spacer} from 'ink';
+
+const Example = () => (
+	<Box>
+		<Text>Left</Text>
+		<Spacer />
+		<Text>Right</Text>
+	</Box>
+);
+
+render(<Example />);
+```
+
+---
+
+title: Utilizing Spacer in Vertical Layout - React
+description: Illustrates the use of `<Spacer>` in a vertical flexbox layout. It imports the required components from `ink` and uses `<Spacer />` within a column-oriented `<Box>` to push content to the top and bottom.
+source: readme.md#_snippet_15
+
+language: jsx
+code:
+```
+import {render, Box, Text, Spacer} from 'ink';
+
+const Example = () => (
+	<Box flexDirection="column" height={10}>
+		<Text>Top</Text>
+		<Spacer />
+		<Text>Bottom</Text>
+	</Box>
+);
+
+render(<Example />);
+```
+
+---
+
+title: Rendering Styled Text with the Text Component
+description: Illustrates styling text using the `<Text>` component. This component accepts props such as `color`, `backgroundColor`, `bold`, `italic`, `underline`, `strikethrough`, and `inverse` to modify the text's appearance.
+source: readme.md#_snippet_4
+
+language: jsx
+code:
+```
+import {render, Text} from 'ink';
+
+const Example = () => (
+	<>
+		<Text color="green">I am green</Text>
+		<Text color="black" backgroundColor="white">
+			I am black on white
+		</Text>
+		<Text color="#ffffff">I am white</Text>
+		<Text bold>I am bold</Text>
+		<Text italic>I am italic</Text>
+		<Text underline>I am underline</Text>
+		<Text strikethrough>I am strikethrough</Text>
+		<Text inverse>I am inversed</Text>
+	</>
+);
+
+render(<Example />);
+```
+
+---
+
+title: Enabling Focus Management Using UseFocusManager
+description: Illustrates how to enable focus management using the `useFocusManager` hook in Ink. The `enableFocus` function is called within a `useEffect` hook to ensure it runs after the component mounts. This allows the user to manage focus manually.
+source: readme.md#_snippet_1
+
+language: js
+code:
+```
+import {useFocusManager} from 'ink';
+
+const Example = () => {
+	const {enableFocus} = useFocusManager();
+
+	useEffect(() => {
+		enableFocus();
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Disabling Focus Management Using UseFocusManager
+description: Demonstrates how to disable focus management using the `useFocusManager` hook in Ink. Calling `disableFocus` will remove focus from the currently active component. The `disableFocus` function is called within a `useEffect` hook to ensure it runs after the component mounts.
+source: readme.md#_snippet_2
+
+language: js
+code:
+```
+import {useFocusManager} from 'ink';
+
+const Example = () => {
+	const {disableFocus} = useFocusManager();
+
+	useEffect(() => {
+		disableFocus();
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Focusing Next Element Using UseFocusManager
+description: Shows how to switch focus to the next focusable component using the `useFocusManager` hook and the `focusNext` function in Ink. If no component is focused the first focusable component will be selected. The `focusNext` function is called within a `useEffect` hook to ensure it runs after the component mounts.
+source: readme.md#_snippet_3
+
+language: js
+code:
+```
+import {useFocusManager} from 'ink';
+
+const Example = () => {
+	const {focusNext} = useFocusManager();
+
+	useEffect(() => {
+		focusNext();
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Focusing Previous Element Using UseFocusManager
+description: Illustrates how to switch focus to the previous focusable component using the `useFocusManager` hook and the `focusPrevious` function in Ink. If no component is focused the first focusable component will be selected. The `focusPrevious` function is called within a `useEffect` hook to ensure it runs after the component mounts.
+source: readme.md#_snippet_4
+
+language: js
+code:
+```
+import {useFocusManager} from 'ink';
+
+const Example = () => {
+	const {focusPrevious} = useFocusManager();
+
+	useEffect(() => {
+		focusPrevious();
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Focusing Element By ID Using UseFocusManager
+description: Demonstrates how to switch focus to a specific component using the `useFocusManager` hook and its `focus` function, targeting a component by its `id`. The `useInput` hook listens for 's' keypress, then the component with the focus ID 'someId' will be focused.
+source: readme.md#_snippet_5
+
+language: js
+code:
+```
+import {useFocusManager, useInput} from 'ink';
+
+const Example = () => {
+	const {focus} = useFocusManager();
+
+	useInput(input => {
+		if (input === 's') {
+			// Focus the component with focus ID 'someId'
+			focus('someId');
+		}
+	});
+
+	return ...
+};
+```
+
+---
+
+title: Updating Props of Root Node Using Rerender
+description: Demonstrates how to update props of the root node by using the `rerender` function, which is returned by the `render` function in Ink. The counter's count prop is updated from 1 to 2, modifying the rendered output.
+source: readme.md#_snippet_6
+
+language: jsx
+code:
+```
+// Update props of the root node
+const {rerender} = render(<Counter count={1} />);
+rerender(<Counter count={2} />);
+```
+
+---
+
+title: Replacing Root Node Using Rerender
+description: Illustrates how to replace the root node with a new component by using the `rerender` function in Ink. The root component is replaced from `<OldCounter />` to `<NewCounter />`, completely changing the rendered output.
+source: readme.md#_snippet_7
+
+language: jsx
+code:
+```
+// Replace root node
+const {rerender} = render(<OldCounter />);
+rerender(<NewCounter />);
+```
+
+---
+
+title: Unmounting Ink App Using Unmount
+description: Shows how to manually unmount the Ink application using the `unmount` function. Calling `unmount` will stop the rendering and clean up the application.
+source: readme.md#_snippet_8
+
+language: jsx
+code:
+```
+const {unmount} = render(<MyApp />);
+unmount();
+```
+
+---
+
+title: Measuring Element Dimensions Using MeasureElement
+description: Demonstrates how to measure the dimensions of a `<Box>` element using `measureElement()`. The `useEffect` hook ensures that `measureElement` is called after the initial render, when layout has been calculated and the correct `width` and `height` are returned.
+source: readme.md#_snippet_9
+
+language: jsx
+code:
+```
+import {render, measureElement, Box, Text} from 'ink';
+
+const Example = () => {
+	const ref = useRef();
+
+	useEffect(() => {
+		const {width, height} = measureElement(ref.current);
+		// width = 100, height = 1
+	}, []);
+
+	return (
+		<Box width={100}>
+			<Box ref={ref}>
+				<Text>This box will stretch to 100 width</Text>
+			</Box>
+		</Box>
+	);
+};
+
+render(<Example />);
+```
+
+---
+
+title: Handling User Input with useInput - Ink
+description: Demonstrates how to use the `useInput` hook to handle user input in an Ink component. The provided callback is executed for each character input, allowing for actions based on specific keys or input strings. It also demonstrates accessing properties of the `key` object to determine which specific key was pressed.
+source: readme.md#_snippet_3
+
+language: jsx
+code:
+```
+import {useInput} from 'ink';
+
+const UserInput = () => {
+	useInput((input, key) => {
+		if (input === 'q') {
+			// Exit program
+		}
+
+		if (key.leftArrow) {
+			// Left arrow key pressed
+		}
+	});
+
+	return ...
+};
+```
+
+---
+
+title: Exiting an Ink App Manually
+description: Demonstrates how to use the `useApp` hook to manually exit an Ink application. The `exit` function can be called to unmount the application, optionally passing an error to reject the `waitUntilExit` promise.
+source: readme.md#_snippet_4
+
+language: js
+code:
+```
+import {useApp} from 'ink';
+
+const Example = () => {
+	const {exit} = useApp();
+
+	// Exit the app after 5 seconds
+	useEffect(() => {
+		setTimeout(() => {
+			exit();
+		}, 5000);
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Accessing Stdin Stream with useStdin - Ink
+description: Demonstrates how to access the stdin stream using the `useStdin` hook in an Ink component. This hook provides access to the standard input stream and a boolean flag to determine if the stream supports raw mode.
+source: readme.md#_snippet_5
+
+language: js
+code:
+```
+import {useStdin} from 'ink';
+
+const Example = () => {
+	const {stdin} = useStdin();
+
+	return ...
+};
+```
+
+---
+
+title: Enabling Raw Mode in Stdin Using useStdin
+description: Demonstrates how to enable and disable raw mode for the stdin stream using the `setRawMode` function provided by the `useStdin` hook. It's important to reset raw mode when the component unmounts to avoid interfering with other processes.
+source: readme.md#_snippet_7
+
+language: js
+code:
+```
+import {useStdin} from 'ink';
+
+const Example = () => {
+	const {setRawMode} = useStdin();
+
+	useEffect(() => {
+		setRawMode(true);
+
+		return () => {
+			setRawMode(false);
+		};
+	});
+
+	return ...
+};
+```
+
+---
+
+title: Accessing Stdout Stream Using useStdout - Ink
+description: Demonstrates how to access the stdout stream using the `useStdout` hook in an Ink component. This hook provides access to the standard output stream, where Ink renders the application.
+source: readme.md#_snippet_8
+
+language: js
+code:
+```
+import {useStdout} from 'ink';
+
+const Example = () => {
+	const {stdout} = useStdout();
+
+	return ...
+};
+```
+
+---
+
+title: Accessing Stderr Stream Using useStderr - Ink
+description: Demonstrates how to access the stderr stream using the `useStderr` hook in an Ink component. This hook provides access to the standard error stream.
+source: readme.md#_snippet_10
+
+language: js
+code:
+```
+import {useStderr} from 'ink';
+
+const Example = () => {
+	const {stderr} = useStderr();
+
+	return ...
+};
+```
+
+---
+
+title: Changing Border Color - React
+description: Demonstrates how to change the color of a `<Box>` component's border using the `borderColor` prop. It sets the `borderColor` to "green", resulting in a green rounded border. This allows for visual customization of borders.
+source: readme.md#_snippet_2
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderColor="green">
+	<Text>Green Rounded Box</Text>
+</Box>
+```
+
+---
+
+title: Changing Top Border Color - React
+description: Demonstrates how to change the color of the top border of a `<Box>` component using the `borderTopColor` prop. It sets the `borderTopColor` to "green", resulting in a green top border. This provides control over individual border sides.
+source: readme.md#_snippet_3
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderTopColor="green">
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Changing Right Border Color - React
+description: Illustrates how to modify the color of the right border of a `<Box>` component utilizing the `borderRightColor` prop. Setting `borderRightColor` to "green" renders a green right border, enabling tailored border styling.
+source: readme.md#_snippet_4
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderRightColor="green">
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Changing Bottom Border Color - React
+description: Shows how to change the bottom border color of a `<Box>` component using `borderBottomColor`. Setting `borderBottomColor` to "green" results in a green bottom border. This allows customization of specific border sides.
+source: readme.md#_snippet_5
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderBottomColor="green">
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Changing Left Border Color - React
+description: Illustrates how to change the left border color of a `<Box>` component with the `borderLeftColor` prop. Setting `borderLeftColor` to "green" makes the left border green. This allows customization for specific border sides.
+source: readme.md#_snippet_6
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderLeftColor="green">
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Setting Background Color - React
+description: Demonstrates the usage of the `backgroundColor` prop in Ink's `<Box>` component to change background color. It also highlights background color inheritance and usage with borders and padding.
+source: readme.md#_snippet_12
+
+language: jsx
+code:
+```
+<Box flexDirection="column">
+	<Box backgroundColor="red" width={20} height={5} alignSelf="flex-start">
+		<Text>Red background</Text>
+	</Box>
+
+	<Box backgroundColor="#FF8800" width={20} height={3} marginTop={1} alignSelf="flex-start">
+		<Text>Orange background</Text>
+	</Box>
+
+	<Box backgroundColor="rgb(0, 255, 0)" width={20} height={3} marginTop={1} alignSelf="flex-start">
+		<Text>Green background</Text>
+	</Box>
+</Box>
+```
+
+language: jsx
+code:
+```
+<Box backgroundColor="blue" alignSelf="flex-start">
+	<Text>Blue inherited </Text>
+	<Text backgroundColor="yellow">Yellow override </Text>
+	<Text>Blue inherited again</Text>
+</Box>
+```
+
+language: jsx
+code:
+```
+<Box backgroundColor="cyan" borderStyle="round" padding={1} alignSelf="flex-start">
+	<Text>Background with border and padding</Text>
+</Box>
+```
+
+---
+
+title: Rendering Static Content with Static - React
+description: Demonstrates the usage of the `<Static>` component in Ink to render content that doesn't change after being rendered.  It simulates running tests and adds their results to a list displayed using `<Static>`, along with a counter that updates dynamically.
+source: readme.md#_snippet_16
+
+language: jsx
+code:
+```
+import React, {useState, useEffect} from 'react';
+import {render, Static, Box, Text} from 'ink';
+
+const Example = () => {
+	const [tests, setTests] = useState([]);
+
+	useEffect(() => {
+		let completedTests = 0;
+		let timer;
+
+		const run = () => {
+			// Fake 10 completed tests
+			if (completedTests++ < 10) {
+				setTests(previousTests => [
+					...previousTests,
+					{
+						id: previousTests.length,
+						 title: `Test #${previousTests.length + 1}`
+					}
+				]);
+
+				  timer = setTimeout(run, 100);
+			}
+		};
+
+		run();
+
+		return () => {
+			clearTimeout(timer);
+		};
+	}, []);
+
+	return (
+		<>
+			{/* This part will be rendered once to the terminal */}
+			<Static items={tests}>
+				{test => (
+					<Box key={test.id}>
+						<Text color="green">âœ” {test.title}</Text>
+					</Box>
+				)}
+			</Static>
+
+			{/* This part keeps updating as state changes */}
+			<Box marginTop={1}>
+				<Text dimColor>Completed tests: {tests.length}</Text>
+			</Box>
+		</>
+	);
+};
+
+render(<Example />);
+```
+
+---
+
+title: Changing Text Color With Chalk
+description: Demonstrates how to change the text color using the `color` prop in the `<Text>` component, which leverages the functionality of the `chalk` library.
+source: readme.md#_snippet_0
+
+language: jsx
+code:
+```
+<Text color="green">Green</Text>
+<Text color="#005cc5">Blue</Text>
+<Text color="rgb(232, 131, 136)">Red</Text>
+```
+
+---
+
+title: Setting Text Background Color
+description: Illustrates how to set the background color of the `<Text>` component using the `backgroundColor` prop, along with changing the text color for readability.
+source: readme.md#_snippet_1
+
+language: jsx
+code:
+```
+<Text backgroundColor="green" color="white">Green</Text>
+<Text backgroundColor="#005cc5" color="white">Blue</Text>
+<Text backgroundColor="rgb(232, 131, 136)" color="white">Red</Text>
+```
+
+---
+
+title: Wrapping Text in Box
+description: Illustrates how to use the `wrap` prop in the `<Text>` component within a `<Box>` to control text wrapping and truncation behaviors when the text width exceeds the container width. It shows examples for wrapping and different truncation modes.
+source: readme.md#_snippet_4
+
+language: jsx
+code:
+```
+<Box width={7}>
+	<Text>Hello World</Text>
+</Box>
+//=> 'Hello\nWorld'
+
+// `truncate` is an alias to `truncate-end`
+<Box width={7}>
+	<Text wrap="truncate">Hello World</Text>
+</Box>
+//=> 'Hello...'
+
+<Box width={7}>
+	<Text wrap="truncate-middle">Hello World</Text>
+</Box>
+//=> 'He...ld'
+
+<Box width={7}>
+	<Text wrap="truncate-start">Hello World</Text>
+</Box>
+//=> '...World'
+```
+
+---
+
+title: Setting Box Width
+description: Illustrates how to set the width of a `<Box>` component using the `width` prop, specifying the width in spaces or as a percentage of the parent element's width.
+source: readme.md#_snippet_6
+
+language: jsx
+code:
+```
+<Box width={4}>
+	<Text>X</Text>
+</Box>
+//=> 'X   '
+```
+
+language: jsx
+code:
+```
+<Box width={10}>
+	<Box width="50%">
+		<Text>X</Text>
+	</Box>
+	<Text>Y</Text>
+</Box>
+//=> 'X    Y'
+```
+
+---
+
+title: Setting Box Height
+description: Illustrates how to set the height of a `<Box>` component using the `height` prop, specifying the height in lines or as a percentage of the parent element's height. The `flexDirection` prop is also showcased.
+source: readme.md#_snippet_7
+
+language: jsx
+code:
+```
+<Box height={4}>
+	<Text>X</Text>
+</Box>
+//=> 'X\n\n\n'
+```
+
+language: jsx
+code:
+```
+<Box height={6} flexDirection="column">
+	<Box height="50%">
+		<Text>X</Text>
+	</Box>
+	<Text>Y</Text>
+</Box>
+//=> 'X\n\n\nY\n\n'
+```
+
+---
+
+title: Applying Padding to Box
+description: Shows how to apply padding to a `<Box>` component using `paddingTop`, `paddingBottom`, `paddingLeft`, `paddingRight`, `paddingX`, `paddingY`, and `padding` props, demonstrating individual and shorthand padding configurations.
+source: readme.md#_snippet_8
+
+language: jsx
+code:
+```
+<Box paddingTop={2}>Top</Box>
+<Box paddingBottom={2}>Bottom</Box>
+<Box paddingLeft={2}>Left</Box>
+<Box paddingRight={2}>Right</Box>
+<Box paddingX={2}>Left and right</Box>
+<Box paddingY={2}>Top and bottom</Box>
+<Box padding={2}>Top, bottom, left and right</Box>
+```
+
+---
+
+title: Applying Margin to Box
+description: Shows how to apply margin to a `<Box>` component using `marginTop`, `marginBottom`, `marginLeft`, `marginRight`, `marginX`, `marginY`, and `margin` props, demonstrating individual and shorthand margin configurations.
+source: readme.md#_snippet_9
+
+language: jsx
+code:
+```
+<Box marginTop={2}>Top</Box>
+<Box marginBottom={2}>Bottom</Box>
+<Box marginLeft={2}>Left</Box>
+<Box marginRight={2}>Right</Box>
+<Box marginX={2}>Left and right</Box>
+<Box marginY={2}>Top and bottom</Box>
+<Box margin={2}>Top, bottom, left and right</Box>
+```
+
+---
+
+title: Setting Gap Between Elements
+description: Demonstrates how to set the gap between elements within a `<Box>` using the `gap`, `columnGap`, and `rowGap` props, controlling spacing in both columns and rows.
+source: readme.md#_snippet_10
+
+language: jsx
+code:
+```
+<Box gap={1} width={3} flexWrap="wrap">
+	<Text>A</Text>
+	<Text>B</Text>
+	<Text>C</Text>
+</Box>
+// A B
+//
+// C
+```
+
+language: jsx
+code:
+```
+<Box columnGap={1}>
+	<Text>A</Text>
+	<Text>B</Text>
+</Box>
+// A B
+```
+
+language: jsx
+code:
+```
+<Box flexDirection="column" rowGap={1}>
+	<Text>A</Text>
+	<Text>B</Text>
+</Box>
+// A
+//
+// B
+```
+
+---
+
+title: Using FlexGrow Property
+description: Illustrates how to use the `flexGrow` property to make a `<Box>` component fill all remaining space within its parent `<Box>` component.
+source: readme.md#_snippet_11
+
+language: jsx
+code:
+```
+<Box>
+	<Text>Label:</Text>
+	<Box flexGrow={1}>
+		<Text>Fills all remaining space</Text>
+	</Box>
+</Box>
+```
+
+---
+
+title: Using FlexShrink Property
+description: Demonstrates how to use the `flexShrink` property to control how a `<Box>` component shrinks relative to other `<Box>` components within a parent `<Box>` component.
+source: readme.md#_snippet_12
+
+language: jsx
+code:
+```
+<Box width={20}>
+	<Box flexShrink={2} width={10}>
+		<Text>Will be 1/4</Text>
+	</Box>
+	<Box width={10}>
+		<Text>Will be 3/4</Text>
+	</Box>
+</Box>
+```
+
+---
+
+title: Using FlexBasis Property
+description: Illustrates how to use the `flexBasis` property to set the initial main size of a `<Box>` component, either in spaces or as a percentage of the parent element's size.
+source: readme.md#_snippet_13
+
+language: jsx
+code:
+```
+<Box width={6}>
+	<Box flexBasis={3}>
+		<Text>X</Text>
+	</Box>
+	<Text>Y</Text>
+</Box>
+//=> 'X  Y'
+```
+
+language: jsx
+code:
+```
+<Box width={6}>
+	<Box flexBasis="50%">
+		<Text>X</Text>
+	</Box>
+	<Text>Y</Text>
+</Box>
+//=> 'X  Y'
+```
+
+---
+
+title: Setting FlexDirection
+description: Demonstrates how to use the `flexDirection` property to control the direction of items in a `<Box>` container, showcasing `row`, `row-reverse`, `column`, and `column-reverse` options.
+source: readme.md#_snippet_14
+
+language: jsx
+code:
+```
+<Box>
+	<Box marginRight={1}>
+		<Text>X</Text>
+	</Box>
+	<Text>Y</Text>
+</Box>
+// X Y
+
+<Box flexDirection="row-reverse">
+	<Text>X</Text>
+	<Box marginRight={1}>
+		<Text>Y</Text>
+	</Box>
+</Box>
+// Y X
+
+<Box flexDirection="column">
+	<Text>X</Text>
+	<Text>Y</Text>
+</Box>
+// X
+// Y
+
+<Box flexDirection="column-reverse">
+	<Text>X</Text>
+	<Text>Y</Text>
+</Box>
+// Y
+// X
+```
+
+---
+
+title: Wrapping Flex Items
+description: Illustrates how to use the `flexWrap` property to control whether items wrap to the next line in a `<Box>` container, showcasing the `wrap` option.
+source: readme.md#_snippet_15
+
+language: jsx
+code:
+```
+<Box width={2} flexWrap="wrap">
+	<Text>A</Text>
+	<Text>BC</Text>
+</Box>
+// A
+// B C
+```
+
+language: jsx
+code:
+```
+<Box flexDirection="column" height={2} flexWrap="wrap">
+	<Text>A</Text>
+	<Text>B</Text>
+	<Text>C</Text>
+</Box>
+// A C
+// B
+```
+
+---
+
+title: Aligning Items With Flexbox
+description: Demonstrates how to use the `alignItems` property to control the alignment of items along the cross axis in a `<Box>` container, showcasing `flex-start`, `center`, and `flex-end` options.
+source: readme.md#_snippet_16
+
+language: jsx
+code:
+```
+<Box alignItems="flex-start">
+	<Box marginRight={1}>
+		<Text>X</Text>
+	</Box>
+	<Text>
+		A
+		<Newline/>
+		B
+		<Newline/>
+		C
+	</Text>
+</Box>
+// X A
+//   B
+//   C
+
+<Box alignItems="center">
+	<Box marginRight={1}>
+		<Text>X</Text>
+	</Box>
+	<Text>
+		A
+		<Newline/>
+		B
+		<Newline/>
+		C
+	</Text>
+</Box>
+//   A
+// X B
+//   C
+
+<Box alignItems="flex-end">
+	<Box marginRight={1}>
+		<Text>X</Text>
+	</Box>
+	<Text>
+		A
+		<Newline/>
+		B
+		<Newline/>
+		C
+	</Text>
+</Box>
+//   A
+//   B
+// X C
+```
+
+---
+
+title: Aligning Self With Flexbox
+description: Demonstrates how to use the `alignSelf` property to control the alignment of a single item along the cross axis in a `<Box>` container, showcasing `flex-start`, `center`, and `flex-end` options.
+source: readme.md#_snippet_17
+
+language: jsx
+code:
+```
+<Box height={3}>
+	<Box alignSelf="flex-start">
+		<Text>X</Text>
+	</Box>
+</Box>
+// X
+//
+//
+
+<Box height={3}>
+	<Box alignSelf="center">
+		<Text>X</Text>
+	</Box>
+</Box>
+//
+// X
+//
+
+<Box height={3}>
+	<Box alignSelf="flex-end">
+		<Text>X</Text>
+	</Box>
+</Box>
+//
+//
+// X
+```
+
+---
+
+title: Justifying Content With Flexbox
+description: Demonstrates how to use the `justifyContent` property to control the alignment of items along the main axis in a `<Box>` container, showcasing `flex-start`, `center`, `flex-end`, `space-between`, `space-around`, and `space-evenly` options.
+source: readme.md#_snippet_18
+
+language: jsx
+code:
+```
+<Box justifyContent="flex-start">
+	<Text>X</Text>
+</Box>
+// [X      ]
+
+<Box justifyContent="center">
+	<Text>X</Text>
+</Box>
+// [   X   ]
+
+<Box justifyContent="flex-end">
+	<Text>X</Text>
+</Box>
+// [      X]
+
+<Box justifyContent="space-between">
+	<Text>X</Text>
+	<Text>Y</Text>
+</Box>
+// [X      Y]
+
+<Box justifyContent="space-around">
+	<Text>X</Text>
+	<Text>Y</Text>
+</Box>
+// [  X   Y  ]
+
+<Box justifyContent="space-evenly">
+	<Text>X</Text>
+	<Text>Y</Text>
+</Box>
+// [   X   Y   ]
+```
+
+---
+
+title: Implementing Hanging Indent with Transform - Ink
+description: Demonstrates how to use the `Transform` component to implement a hanging indent. The `transform` function receives each line of text and its index, allowing for conditional formatting based on line number, applying indentation to subsequent lines.
+source: readme.md#_snippet_2
+
+language: jsx
+code:
+```
+import {render, Transform} from 'ink';
+
+const HangingIndent = ({content, indent = 4, children, ...props}) => (
+	<Transform
+		transform={(line, index) =>
+			index === 0 ? line : ' '.repeat(indent) + line
+		}
+		{...props}
+	>
+		{children}
+	</Transform>
+);
+
+const text =
+	'WHEN I WROTE the following pages, or rather the bulk of them, ' +
+	'I lived alone, in the woods, a mile from any neighbor, in a ' +
+	'house which I had built myself, on the shore of Walden Pond, ' +
+	'in Concord, Massachusetts, and earned my living by the labor ' +
+	'of my hands only. I lived there two years and two months. At ' +
+	'present I am a sojourner in civilized life again.';
+
+// Other text properties are allowed as well
+render(
+	<HangingIndent bold dimColor indent={4}>
+		{text}
+	</HangingIndent>
+);
+```
+
+---
+
+title: Checking Raw Mode Support in Stdin
+description: Demonstrates how to use `isRawModeSupported` from the `useStdin` hook to conditionally render components based on whether raw mode is supported in the current environment. This allows for graceful fallbacks when raw mode is unavailable.
+source: readme.md#_snippet_6
+
+language: jsx
+code:
+```
+import {useStdin} from 'ink';
+
+const Example = () => {
+	const {isRawModeSupported} = useStdin();
+
+	return isRawModeSupported ? (
+		<MyInputComponent />
+	) : (
+		<MyComponentThatDoesntUseInput />
+	);
+};
+```
+
+---
+
+title: Writing to Stdout from Ink
+description: Demonstrates how to write directly to the stdout stream from within an Ink component using the `write` function provided by the `useStdout` hook. This allows for displaying information outside of Ink's rendering while preserving its output.
+source: readme.md#_snippet_9
+
+language: js
+code:
+```
+import {useStdout} from 'ink';
+
+const Example = () => {
+	const {write} = useStdout();
+
+	useEffect(() => {
+		// Write a single message to stdout, above Ink's output
+		write('Hello from Ink to stdout\n');
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Writing to Stderr from Ink
+description: Demonstrates how to write directly to the stderr stream from within an Ink component using the `write` function provided by the `useStderr` hook. This is useful for displaying error messages or debugging information outside of Ink's rendering while preserving its output.
+source: readme.md#_snippet_11
+
+language: js
+code:
+```
+import {useStderr} from 'ink';
+
+const Example = () => {
+	const {write} = useStderr();
+
+	useEffect(() => {
+		// Write a single message to stderr, above Ink's output
+		write('Hello from Ink to stderr\n');
+	}, []);
+
+	return ...
+};
+```
+
+---
+
+title: Applying a Custom Border Style - React
+description: Illustrates how to apply a custom border style to an Ink `<Box>` component. It defines a custom `borderStyle` object with specific characters for each part of the border. This offers complete control over the border's appearance.
+source: readme.md#_snippet_1
+
+language: jsx
+code:
+```
+<Box
+	borderStyle={{
+		topLeft: 'â†˜',
+		top: 'â†“',
+		topRight: 'â†™',
+		left: 'â†’',
+		bottomLeft: 'â†—',
+		bottom: 'â†‘',
+		bottomRight: 'â†–',
+		right: 'â†'
+	}}
+>
+	<Text>Custom</Text>
+</Box>
+```
+
+---
+
+title: Dimming Border Color - React
+description: Demonstrates how to dim the color of a `<Box>` component's border using the `borderDimColor` prop.  Enabling `borderDimColor` dims all sides of the border. This offers a subtle visual effect.
+source: readme.md#_snippet_7
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderDimColor>
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Dimming Top Border Color - React
+description: Shows how to dim only the top border of a `<Box>` component. By setting `borderTopDimColor` to true, the top border color is dimmed. This enables nuanced visual styling of borders.
+source: readme.md#_snippet_8
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderTopDimColor>
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Dimming Bottom Border Color - React
+description: Demonstrates how to dim the bottom border color of a `<Box>` component using the `borderBottomDimColor` prop. Setting this prop to true dims the color of the bottom border.  This enables fine-grained control over border styles.
+source: readme.md#_snippet_9
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderBottomDimColor>
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Dimming Left Border Color - React
+description: Illustrates how to dim the left border color of a `<Box>` component. Using the `borderLeftDimColor` prop, setting it to true, dims the color of the left border. This enables nuanced border customization.
+source: readme.md#_snippet_10
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderLeftDimColor>
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Dimming Right Border Color - React
+description: Illustrates how to dim the right border color of a `<Box>` component using the `borderRightDimColor` prop. Setting the `borderRightDimColor` to true, dims the color of just the right border. This allows for specific side border styling.
+source: readme.md#_snippet_11
+
+language: jsx
+code:
+```
+<Box borderStyle="round" borderRightDimColor>
+	<Text>Hello world</Text>
+</Box>
+```
+
+---
+
+title: Dimming Text Color
+description: Shows how to dim the color of the `<Text>` component using the `dimColor` prop, which emits a small amount of light.
+source: readme.md#_snippet_2
+
+language: jsx
+code:
+```
+<Text color="red" dimColor>
+	Dimmed Red
+</Text>
+```
+
+---
+
+title: Inversing Text Color
+description: Demonstrates how to inverse the background and foreground colors of the `<Text>` component using the `inverse` prop.
+source: readme.md#_snippet_3
+
+language: jsx
+code:
+```
+<Text inverse color="yellow">
+	Inversed Yellow
+</Text>
+```
+
+---
+
+title: Setting Up Babel for JSX Transpilation
+description: Illustrates how to set up Babel with a React preset to transpile JSX code. This configuration enables the use of JSX syntax within Ink components.
+source: readme.md#_snippet_2
+
+language: sh
+code:
+```
+npm install --save-dev @babel/preset-react
+```
+
+language: json
+code:
+```
+{
+	"presets": ["@babel/preset-react"]
+}
+```
+
+---
