@@ -21,6 +21,7 @@ const App = () => {
   useInput((input, key) => {
     if (state === 'menu') {
       if (input === 'q' || key.escape) {
+        console.clear();
         exit();
       } else if (key.upArrow) {
         setSelectedIndex(Math.max(0, selectedIndex - 1));
