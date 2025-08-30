@@ -4,13 +4,11 @@ import { render, Text, Box, useApp, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import { query } from '@anthropic-ai/claude-code';
 import { claudeConfig } from './config';
-import ChatLoop from './ChatLoop';
 
-type AppState = 'menu' | 'input' | 'processing' | 'result' | 'chat-loop';
+type AppState = 'menu' | 'input' | 'processing' | 'result';
 
 const actions = [
-  { id: 'claude', label: 'Message Claude Code', description: 'Send requests to Claude to help with your development tasks' },
-  { id: 'chat-loop', label: 'Interactive Chat Loop', description: 'Chat with Claude with hook logging and custom tools' }
+  { id: 'claude', label: 'Message Claude Code', description: 'Send requests to Claude to help with your development tasks' }
 ];
 
 const App = () => {
@@ -29,12 +27,7 @@ const App = () => {
       } else if (key.downArrow) {
         setSelectedIndex(Math.min(actions.length - 1, selectedIndex + 1));
       } else if (key.return) {
-        const selectedAction = actions[selectedIndex];
-        if (selectedAction.id === 'chat-loop') {
-          setState('chat-loop');
-        } else {
-          setState('input');
-        }
+        setState('input');
       }
     } else if (state === 'input') {
       if (key.escape) {
@@ -158,10 +151,6 @@ const App = () => {
         </Box>
       </Box>
     );
-  }
-
-  if (state === 'chat-loop') {
-    return <ChatLoop onExit={() => setState('menu')} />;
   }
 
   return null;
