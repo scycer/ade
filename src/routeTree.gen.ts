@@ -10,115 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ToolsTodoManagerRouteImport } from './routes/tools/todo-manager'
-import { Route as ToolsGitHelperRouteImport } from './routes/tools/git-helper'
-import { Route as ToolsFileBrowserRouteImport } from './routes/tools/file-browser'
-import { Route as ToolsFileAgentRouteImport } from './routes/tools/file-agent'
-import { Route as ToolsCodeSnippetsRouteImport } from './routes/tools/code-snippets'
-import { Route as ToolsApiTesterRouteImport } from './routes/tools/api-tester'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ToolsTodoManagerRoute = ToolsTodoManagerRouteImport.update({
-  id: '/tools/todo-manager',
-  path: '/tools/todo-manager',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsGitHelperRoute = ToolsGitHelperRouteImport.update({
-  id: '/tools/git-helper',
-  path: '/tools/git-helper',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsFileBrowserRoute = ToolsFileBrowserRouteImport.update({
-  id: '/tools/file-browser',
-  path: '/tools/file-browser',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsFileAgentRoute = ToolsFileAgentRouteImport.update({
-  id: '/tools/file-agent',
-  path: '/tools/file-agent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsCodeSnippetsRoute = ToolsCodeSnippetsRouteImport.update({
-  id: '/tools/code-snippets',
-  path: '/tools/code-snippets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ToolsApiTesterRoute = ToolsApiTesterRouteImport.update({
-  id: '/tools/api-tester',
-  path: '/tools/api-tester',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/tools/api-tester': typeof ToolsApiTesterRoute
-  '/tools/code-snippets': typeof ToolsCodeSnippetsRoute
-  '/tools/file-agent': typeof ToolsFileAgentRoute
-  '/tools/file-browser': typeof ToolsFileBrowserRoute
-  '/tools/git-helper': typeof ToolsGitHelperRoute
-  '/tools/todo-manager': typeof ToolsTodoManagerRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/tools/api-tester': typeof ToolsApiTesterRoute
-  '/tools/code-snippets': typeof ToolsCodeSnippetsRoute
-  '/tools/file-agent': typeof ToolsFileAgentRoute
-  '/tools/file-browser': typeof ToolsFileBrowserRoute
-  '/tools/git-helper': typeof ToolsGitHelperRoute
-  '/tools/todo-manager': typeof ToolsTodoManagerRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/tools/api-tester': typeof ToolsApiTesterRoute
-  '/tools/code-snippets': typeof ToolsCodeSnippetsRoute
-  '/tools/file-agent': typeof ToolsFileAgentRoute
-  '/tools/file-browser': typeof ToolsFileBrowserRoute
-  '/tools/git-helper': typeof ToolsGitHelperRoute
-  '/tools/todo-manager': typeof ToolsTodoManagerRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/tools/api-tester'
-    | '/tools/code-snippets'
-    | '/tools/file-agent'
-    | '/tools/file-browser'
-    | '/tools/git-helper'
-    | '/tools/todo-manager'
+  fullPaths: '/'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/tools/api-tester'
-    | '/tools/code-snippets'
-    | '/tools/file-agent'
-    | '/tools/file-browser'
-    | '/tools/git-helper'
-    | '/tools/todo-manager'
-  id:
-    | '__root__'
-    | '/'
-    | '/tools/api-tester'
-    | '/tools/code-snippets'
-    | '/tools/file-agent'
-    | '/tools/file-browser'
-    | '/tools/git-helper'
-    | '/tools/todo-manager'
+  to: '/'
+  id: '__root__' | '/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ToolsApiTesterRoute: typeof ToolsApiTesterRoute
-  ToolsCodeSnippetsRoute: typeof ToolsCodeSnippetsRoute
-  ToolsFileAgentRoute: typeof ToolsFileAgentRoute
-  ToolsFileBrowserRoute: typeof ToolsFileBrowserRoute
-  ToolsGitHelperRoute: typeof ToolsGitHelperRoute
-  ToolsTodoManagerRoute: typeof ToolsTodoManagerRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -130,59 +48,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tools/todo-manager': {
-      id: '/tools/todo-manager'
-      path: '/tools/todo-manager'
-      fullPath: '/tools/todo-manager'
-      preLoaderRoute: typeof ToolsTodoManagerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/git-helper': {
-      id: '/tools/git-helper'
-      path: '/tools/git-helper'
-      fullPath: '/tools/git-helper'
-      preLoaderRoute: typeof ToolsGitHelperRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/file-browser': {
-      id: '/tools/file-browser'
-      path: '/tools/file-browser'
-      fullPath: '/tools/file-browser'
-      preLoaderRoute: typeof ToolsFileBrowserRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/file-agent': {
-      id: '/tools/file-agent'
-      path: '/tools/file-agent'
-      fullPath: '/tools/file-agent'
-      preLoaderRoute: typeof ToolsFileAgentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/code-snippets': {
-      id: '/tools/code-snippets'
-      path: '/tools/code-snippets'
-      fullPath: '/tools/code-snippets'
-      preLoaderRoute: typeof ToolsCodeSnippetsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/tools/api-tester': {
-      id: '/tools/api-tester'
-      path: '/tools/api-tester'
-      fullPath: '/tools/api-tester'
-      preLoaderRoute: typeof ToolsApiTesterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ToolsApiTesterRoute: ToolsApiTesterRoute,
-  ToolsCodeSnippetsRoute: ToolsCodeSnippetsRoute,
-  ToolsFileAgentRoute: ToolsFileAgentRoute,
-  ToolsFileBrowserRoute: ToolsFileBrowserRoute,
-  ToolsGitHelperRoute: ToolsGitHelperRoute,
-  ToolsTodoManagerRoute: ToolsTodoManagerRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

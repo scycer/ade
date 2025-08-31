@@ -1,5 +1,13 @@
 # TODO
 
+## Focus
+simple node and edges fullstack with AI
+
+## Next
+
+---------------------
+# High Level Summary
+
 ## Features
 - Monitor CC sessions
 - Log CC hook usage
