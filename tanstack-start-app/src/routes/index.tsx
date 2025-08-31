@@ -1,5 +1,5 @@
 import * as fs from 'node:fs'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { createFileRoute, useRouter, Link } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 
 const filePath = 'count.txt'
@@ -51,26 +51,62 @@ function Home() {
     fontFamily: 'Fira Code, monospace',
   }
 
+  const containerStyles: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '2rem',
+  }
+
+  const linkStyles: React.CSSProperties = {
+    color: '#ffffff',
+    textDecoration: 'none',
+    padding: '0.75rem 1.5rem',
+    background: '#333333',
+    border: '1px solid #505050',
+    fontFamily: 'Fira Code, monospace',
+    fontSize: '1rem',
+    transition: 'all 0.2s',
+    display: 'inline-block',
+  }
+
   return (
-    <div 
-      style={cardStyles}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = '#333333'
-        e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = '6px 6px 0px rgba(0, 0, 0, 0.4)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = '#2a2a2a'
-        e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = '4px 4px 0px rgba(0, 0, 0, 0.3)'
-      }}
-      onClick={() => {
-        updateCount({ data: 1 }).then(() => {
-          router.invalidate()
-        })
-      }}
-    >
-      <div style={counterStyles}>{state}</div>
+    <div style={containerStyles}>
+      <div 
+        style={cardStyles}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#333333'
+          e.currentTarget.style.transform = 'translateY(-2px)'
+          e.currentTarget.style.boxShadow = '6px 6px 0px rgba(0, 0, 0, 0.4)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#2a2a2a'
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = '4px 4px 0px rgba(0, 0, 0, 0.3)'
+        }}
+        onClick={() => {
+          updateCount({ data: 1 }).then(() => {
+            router.invalidate()
+          })
+        }}
+      >
+        <div style={counterStyles}>{state}</div>
+      </div>
+      
+      <Link 
+        to="/git-history" 
+        style={linkStyles}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#444444'
+          e.currentTarget.style.transform = 'translateY(-2px)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#333333'
+          e.currentTarget.style.transform = 'translateY(0)'
+        }}
+      >
+        View Git History
+      </Link>
     </div>
   )
 }
