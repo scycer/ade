@@ -38,6 +38,9 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
     <html>
       <head>
         <HeadContent />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
         <style>{`
           * {
             margin: 0;
@@ -46,8 +49,8 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
           }
           
           body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Fira Code', monospace;
+            background: #1a1a1a;
             min-height: 100vh;
             display: flex;
             align-items: center;
