@@ -1,185 +1,290 @@
-# ADE - AI Development Environment
+Welcome to your new TanStack app! 
 
-A Terminal User Interface (TUI) for interacting with multiple AI models including Claude Code and OpenRouter's GPT-OSS-120B, featuring multi-turn conversations, tool calling, and weather demonstrations.
+# Getting Started
 
-## Features
-
-### 🤖 Multi-Model Support
-- **Claude Code**: Anthropic's Claude via the Claude Code SDK
-- **OpenRouter Integration**: Access to GPT-OSS-120B and 300+ other models
-- **Mastra Framework**: Built-in support for agent creation and tool calling
-
-### 💬 Multi-Turn Chat
-- **Session Management**: Conversations maintain context across multiple messages
-- **No Turn Limits**: Default `maxTurns: 999` for unlimited conversation
-- **Session Persistence**: Resume previous sessions using session IDs
-- **Hook Callbacks**: Monitor all message types and events
-
-### 🛠️ Tool Calling Support
-- **Claude Code Tools**: WebSearch, Read, Bash, and more
-- **Weather Demo**: Built-in mock weather tool for testing
-- **Real-time Execution**: Tools execute during conversation flow
-
-### 💬 Conversation Features
-- **Message History**: Full conversation history display
-- **Role Indicators**: Clear user/assistant message differentiation
-- **Session Tracking**: Display current session ID
-- **Cost Monitoring**: Track API usage costs per turn
-
-## Installation
+To run this application:
 
 ```bash
-# Install dependencies
-bun install
-
-# Run the TUI (interactive mode)
-bun run index.tsx
-
-# Run the test script
-bun run test-chat.ts
-
-# Run examples
-bun run src/examples/multi-turn-chat.example.ts
-bun run src/examples/simple-test.ts
+npm install
+npm run start
 ```
 
-## Usage
+# Building For Production
 
-### TUI Navigation
-- **Arrow Keys**: Navigate menu options
-- **Enter**: Select an option
-- **ESC**: Go back or exit
-- **q**: Quit application
+To build this application for production:
 
-### Menu Options
-
-#### 1. Message Claude Code
-Single message to Claude with response.
-
-#### 2. Multi-turn Chat
-Interactive conversation mode with Claude:
-- Continuous conversation in same session
-- Weather tool demonstrations (type "weather in [city]")
-- Full message history display
-- Session ID tracking
-
-#### 3. Weather Demo
-Test the weather tool functionality with multiple cities.
-
-#### 4. OpenRouter GPT-OSS-120B
-Single query to GPT-OSS-120B model via OpenRouter API.
-
-#### 5. OpenRouter Multi-turn Chat
-Interactive conversation with GPT-OSS-120B:
-- Persistent conversation history
-- Model information display
-- Token usage tracking
-
-### Weather Tool Examples
-In conversation mode, try:
-- "What's the weather in San Francisco, CA?"
-- "Check weather for New York, NY and London, UK"
-- "Tell me about the weather in Paris, FR"
-
-## API Configuration
-
-### Claude API
-Set your Claude API key:
 ```bash
-export ANTHROPIC_API_KEY="your-api-key"
+npm run build
 ```
 
-### OpenRouter API
-Set your OpenRouter API key:
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+
 ```bash
-export OPENROUTER_API_KEY="your-api-key"
+npm run test
 ```
 
-1. Sign up at [OpenRouter](https://openrouter.ai)
-2. Get your API key from the dashboard
-3. Set the environment variable as shown above
+## Styling
 
-Or configure in the respective service files.
+This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
 
-## Architecture
 
-### Core Components
-- **ClaudeChat**: Session-based conversation manager
-- **ConversationView**: React component for chat UI
-- **Weather Tools**: Mock implementations for testing
 
-### Key Files
-- `src/services/claude.service.ts` - Claude integration with multi-turn support
-- `src/services/openrouter.service.ts` - OpenRouter integration with OpenAI SDK
-- `src/components/ConversationView.tsx` - Chat UI component
-- `src/App.tsx` - Main TUI application
-- `test-chat.ts` - Test script for Claude features
-- `test-openrouter.ts` - Test script for OpenRouter features
 
-## Development
+## Routing
+This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
 
-### Testing Features
+### Adding A Route
 
-#### Test Claude Integration
+To add a new route to your application just add another a new file in the `./src/routes` directory.
+
+TanStack will automatically generate the content of the route file for you.
+
+Now that you have two routes you can use a `Link` component to navigate between them.
+
+### Adding Links
+
+To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
+
+```tsx
+import { Link } from "@tanstack/react-router";
+```
+
+Then anywhere in your JSX you can use it like so:
+
+```tsx
+<Link to="/about">About</Link>
+```
+
+This will create a link that will navigate to the `/about` route.
+
+More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+
+### Using A Layout
+
+In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
+
+Here is an example layout that includes a header:
+
+```tsx
+import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+
+import { Link } from "@tanstack/react-router";
+
+export const Route = createRootRoute({
+  component: () => (
+    <>
+      <header>
+        <nav>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+        </nav>
+      </header>
+      <Outlet />
+      <TanStackRouterDevtools />
+    </>
+  ),
+})
+```
+
+The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
+
+More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+
+
+## Data Fetching
+
+There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+
+For example:
+
+```tsx
+const peopleRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/people",
+  loader: async () => {
+    const response = await fetch("https://swapi.dev/api/people");
+    return response.json() as Promise<{
+      results: {
+        name: string;
+      }[];
+    }>;
+  },
+  component: () => {
+    const data = peopleRoute.useLoaderData();
+    return (
+      <ul>
+        {data.results.map((person) => (
+          <li key={person.name}>{person.name}</li>
+        ))}
+      </ul>
+    );
+  },
+});
+```
+
+Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+
+### React-Query
+
+React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
+
+First add your dependencies:
+
 ```bash
-bun run test-chat.ts
+npm install @tanstack/react-query @tanstack/react-query-devtools
 ```
 
-#### Test OpenRouter Integration
+Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
+
+```tsx
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// ...
+
+const queryClient = new QueryClient();
+
+// ...
+
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+
+  root.render(
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
+}
+```
+
+You can also add TanStack Query Devtools to the root route (optional).
+
+```tsx
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+const rootRoute = createRootRoute({
+  component: () => (
+    <>
+      <Outlet />
+      <ReactQueryDevtools buttonPosition="top-right" />
+      <TanStackRouterDevtools />
+    </>
+  ),
+});
+```
+
+Now you can use `useQuery` to fetch your data.
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+import "./App.css";
+
+function App() {
+  const { data } = useQuery({
+    queryKey: ["people"],
+    queryFn: () =>
+      fetch("https://swapi.dev/api/people")
+        .then((res) => res.json())
+        .then((data) => data.results as { name: string }[]),
+    initialData: [],
+  });
+
+  return (
+    <div>
+      <ul>
+        {data.map((person) => (
+          <li key={person.name}>{person.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+```
+
+You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
+
+## State Management
+
+Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
+
+First you need to add TanStack Store as a dependency:
+
 ```bash
-bun run test-openrouter.ts
+npm install @tanstack/store
 ```
 
-#### Weather Tool (No API Key Required)
-```typescript
-import { getMockWeatherData } from './src/services/claude.service';
+Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
 
-const weather = getMockWeatherData('San Francisco, CA', 'fahrenheit');
-console.log(weather);
+```tsx
+import { useStore } from "@tanstack/react-store";
+import { Store } from "@tanstack/store";
+import "./App.css";
+
+const countStore = new Store(0);
+
+function App() {
+  const count = useStore(countStore);
+  return (
+    <div>
+      <button onClick={() => countStore.setState((n) => n + 1)}>
+        Increment - {count}
+      </button>
+    </div>
+  );
+}
+
+export default App;
 ```
 
-### Custom Tools
-While client-side tool execution isn't directly supported by the SDK, you can:
-1. Define tool schemas for the API
-2. Handle special commands locally (like weather)
-3. Use MCP servers for advanced tools
+One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
 
-## Features Summary
+Let's check this out by doubling the count using derived state.
 
-✅ **Multi-Model Support** - Claude Code and OpenRouter (GPT-OSS-120B + 300+ models)
-✅ **Multi-turn Conversations** - Unlimited back-and-forth chat
-✅ **Session Management** - Automatic session tracking and resumption  
-✅ **Weather Tool** - Built-in mock weather for any city
-✅ **Hook System** - Monitor all SDK events and messages
-✅ **Cost Tracking** - See API costs per conversation turn
-✅ **Tool Support** - WebSearch, Read, Bash, and custom tools
-✅ **Conversation History** - Full message history with roles
-✅ **No Turn Limits** - Default 999 turns (effectively unlimited)
-✅ **Mastra Integration** - Agent framework for advanced AI applications
+```tsx
+import { useStore } from "@tanstack/react-store";
+import { Store, Derived } from "@tanstack/store";
+import "./App.css";
 
-## Troubleshooting
+const countStore = new Store(0);
 
-### TUI Not Working
-The TUI requires an interactive terminal. Run directly in terminal:
-```bash
-bun run index.tsx
+const doubledStore = new Derived({
+  fn: () => countStore.state * 2,
+  deps: [countStore],
+});
+doubledStore.mount();
+
+function App() {
+  const count = useStore(countStore);
+  const doubledCount = useStore(doubledStore);
+
+  return (
+    <div>
+      <button onClick={() => countStore.setState((n) => n + 1)}>
+        Increment - {count}
+      </button>
+      <div>Doubled - {doubledCount}</div>
+    </div>
+  );
+}
+
+export default App;
 ```
 
-### Model Switching
-The TUI automatically routes to the appropriate service based on your menu selection:
-- Claude options use the Claude Code SDK
-- OpenRouter options use the OpenAI SDK with OpenRouter endpoint
+We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
 
-### Available OpenRouter Models
-While configured for GPT-OSS-120B by default, OpenRouter provides access to 300+ models including:
-- GPT-4, GPT-3.5
-- Claude models
-- Llama models
-- Mistral models
-- And many more
+Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
 
-Modify `src/services/openrouter.service.ts` to use different models.
+You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
 
-## License
+# Demo files
 
-MIT
+Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
+
+# Learn More
+
+You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).

@@ -1,13 +1,13 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useEffect } from 'react'
-import { executeAgentQuery, getAgentHistory, indexFile } from '../lib/server-functions'
+import { useState } from 'react'
+import { executeAgentQuery, getAgentHistory, indexFile } from '../../lib/server-functions'
 
-export const Route = createFileRoute('/')({
-  component: AgentInterface,
+export const Route = createFileRoute('/tools/file-agent')({
+  component: FileAgent,
   loader: async () => await getAgentHistory(),
 })
 
-function AgentInterface() {
+function FileAgent() {
   const history = Route.useLoaderData()
   const [query, setQuery] = useState('')
   const [currentPlan, setCurrentPlan] = useState<any>(null)
@@ -39,7 +39,10 @@ function AgentInterface() {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">AI File Agent</h1>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold mb-2">AI File Agent</h1>
+        <p className="text-gray-600">Search and analyze files with AI-powered semantic search</p>
+      </div>
 
       {/* Query Input */}
       <div className="mb-8">
