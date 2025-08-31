@@ -1,5 +1,52 @@
 ---
 
+# TanStack Start Application
+
+This is a TanStack Start application using React Router with file-based routing and server functions.
+
+## Project Structure
+
+```
+tanstack-start-app/
+├── src/
+│   ├── routes/           # File-based routing
+│   │   ├── __root.tsx   # Root layout with dark theme
+│   │   └── index.tsx    # Home page with counter
+│   ├── router.tsx       # Router configuration
+│   └── routeTree.gen.ts # Auto-generated route tree
+├── docs/
+│   └── plan/           # Feature planning documents
+├── package.json        # Dependencies and scripts
+├── vite.config.ts      # Vite configuration
+└── tsconfig.json       # TypeScript configuration
+```
+
+## Tech Stack
+- **TanStack Start**: Full-stack React framework with server functions
+- **TanStack Router**: Type-safe routing with file-based routes
+- **React 19**: UI library
+- **Vite**: Build tool and dev server
+- **Bun**: JavaScript runtime and package manager
+- **TypeScript**: Type safety
+
+## Development Commands
+- `bun run dev` - Start development server (running on port 3000)
+- `bun run build` - Build for production
+- `bun install` - Install dependencies
+
+## Styling
+- Dark theme with `#1a1a1a` background
+- Fira Code monospace font throughout
+- Terminal-inspired aesthetic
+- Inline styles (no CSS framework currently)
+
+## Routing Pattern
+- File-based routing in `/src/routes/`
+- Server functions using `createServerFn` for backend logic
+- Automatic route generation via TanStack Router
+
+---
+
 Default to using Bun instead of Node.js.
 
 - Use `bun <file>` instead of `node <file>` or `ts-node <file>`
