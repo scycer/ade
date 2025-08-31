@@ -6,9 +6,10 @@ interface InputPromptProps {
   value: string;
   onChange: (value: string) => void;
   onSubmit: (value: string) => void;
+  placeholder?: string;
 }
 
-export const InputPrompt: React.FC<InputPromptProps> = ({ value, onChange, onSubmit }) => {
+export const InputPrompt: React.FC<InputPromptProps> = ({ value, onChange, onSubmit, placeholder }) => {
   return (
     <Box flexDirection="column" paddingY={1}>
       <Box marginBottom={1}>
@@ -25,6 +26,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({ value, onChange, onSub
           value={value} 
           onChange={onChange}
           onSubmit={onSubmit}
+          placeholder={placeholder || 'Enter your message...'}
         />
       </Box>
     </Box>
