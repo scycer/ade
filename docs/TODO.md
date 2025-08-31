@@ -1,11 +1,9 @@
 # TODO
 
-## Commit
-Tanstack start basic repo
-
 ## Focus
-A way to see the past commit and code diff in a page rendered nicely
+A way to see the past commits and code diff in a page rendered nicely
 
+## Todo
 simple node and edges fullstack with AI
 
 ## Next
