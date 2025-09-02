@@ -4,7 +4,9 @@
 A way to see the past commits and code diff in a page rendered nicely
 
 ## Todo
+an AI summary of the commit in one-click
 simple node and edges fullstack with AI
+simple doc vector search tool (also look for existing library tool MCP providers like refiy)
 
 ## Next
 

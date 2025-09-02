@@ -3,8 +3,36 @@ import { createServerFn } from '@tanstack/react-start'
 import { useState } from 'react'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
+import { Agent } from '@mastra/core/agent'
+import { createOpenRouter } from '@openrouter/ai-sdk-provider'
 
 const execAsync = promisify(exec)
+
+// Initialize OpenRouter with the API key
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+})
+
+// Create the AI agent for generating commit descriptions
+const commitAnalyzer = new Agent({
+  name: 'CommitAnalyzer',
+  instructions: `You are an expert git commit analyzer. When given a git commit diff, you will:
+  1. Generate a concise, descriptive title (max 72 characters) that captures the essence of the changes
+  2. Write a detailed description that explains:
+     - What changes were made
+     - Why these changes might have been made (based on the code context)
+     - The impact of these changes
+     - Any notable patterns or techniques used
+  
+  Format your response as JSON with the following structure:
+  {
+    "title": "Brief, descriptive title",
+    "description": "Detailed multi-line description of the changes"
+  }
+  
+  Be professional, technical, and accurate in your analysis.`,
+  model: openrouter('openai/gpt-oss-120b'),
+})
 
 interface Commit {
   hash: string
@@ -23,6 +51,11 @@ interface Commit {
 interface DiffData {
   commit: Commit
   diff: string
+}
+
+interface GeneratedDescription {
+  title: string
+  description: string
 }
 
 const getCommits = createServerFn({
@@ -168,6 +201,53 @@ const getCommitDiff = createServerFn({
   }
 })
 
+const generateCommitDescription = createServerFn({
+  method: 'POST',
+})
+  .validator((data: { hash: string; diff: string; message: string }) => data)
+  .handler(async ({ data }) => {
+    const { hash, diff, message } = data
+    
+    try {
+      // Generate AI description using the commit diff
+      const prompt = `Analyze this git commit:
+
+Original commit message: ${message}
+
+Commit hash: ${hash}
+
+Diff:
+${diff.substring(0, 8000)} ${diff.length > 8000 ? '... (truncated)' : ''}`
+      
+      const response = await commitAnalyzer.generate([
+        { role: 'user', content: prompt }
+      ])
+      
+      // Parse the JSON response
+      try {
+        const result = JSON.parse(response.text)
+        return {
+          success: true,
+          title: result.title,
+          description: result.description
+        }
+      } catch (parseError) {
+        // Fallback if JSON parsing fails
+        return {
+          success: true,
+          title: message.substring(0, 72),
+          description: response.text
+        }
+      }
+    } catch (error) {
+      console.error('Error generating commit description:', error)
+      return {
+        success: false,
+        error: 'Failed to generate description. Please check your OPENROUTER_API_KEY.'
+      }
+    }
+  })
+
 export const Route = createFileRoute('/git-history')({
   component: GitHistory,
   loader: async () => await getCommits({ page: 1 }),
@@ -179,6 +259,8 @@ function GitHistory() {
   const [data, setData] = useState(initialData)
   const [selectedCommit, setSelectedCommit] = useState<DiffData | null>(null)
   const [loading, setLoading] = useState(false)
+  const [generatingDescriptions, setGeneratingDescriptions] = useState<Set<string>>(new Set())
+  const [generatedDescriptions, setGeneratedDescriptions] = useState<Map<string, GeneratedDescription>>(new Map())
   
   const loadPage = async (page: number) => {
     setLoading(true)
@@ -198,6 +280,52 @@ function GitHistory() {
       console.error('Error calling getCommitDiff:', error)
     }
     setLoading(false)
+  }
+  
+  const generateDescription = async (commit: Commit, event: React.MouseEvent) => {
+    event.stopPropagation() // Prevent triggering the commit click
+    
+    // Check if already generating or generated
+    if (generatingDescriptions.has(commit.hash) || generatedDescriptions.has(commit.hash)) {
+      return
+    }
+    
+    // Mark as generating
+    setGeneratingDescriptions(prev => new Set([...prev, commit.hash]))
+    
+    try {
+      // First fetch the diff for this commit
+      const diffData = await getCommitDiff({ data: commit.hash })
+      if (!diffData.error && diffData.diff) {
+        // Generate the description
+        const result = await generateCommitDescription({
+          data: {
+            hash: commit.hash,
+            diff: diffData.diff,
+            message: commit.message
+          }
+        })
+        
+        if (result.success) {
+          setGeneratedDescriptions(prev => new Map(prev).set(commit.hash, {
+            title: result.title,
+            description: result.description
+          }))
+        } else {
+          alert(result.error || 'Failed to generate description')
+        }
+      }
+    } catch (error) {
+      console.error('Error generating description:', error)
+      alert('Failed to generate description')
+    } finally {
+      // Remove from generating set
+      setGeneratingDescriptions(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(commit.hash)
+        return newSet
+      })
+    }
   }
   
   const containerStyles: React.CSSProperties = {
@@ -268,6 +396,26 @@ function GitHistory() {
     color: '#ffffff',
     cursor: 'pointer',
     transition: 'all 0.2s',
+  }
+  
+  const aiButtonStyles: React.CSSProperties = {
+    padding: '0.25rem 0.5rem',
+    background: '#4a5568',
+    border: '1px solid #606060',
+    color: '#ffffff',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    fontSize: '0.75rem',
+    marginLeft: '0.5rem',
+    borderRadius: '4px',
+  }
+  
+  const generatedBoxStyles: React.CSSProperties = {
+    marginTop: '0.5rem',
+    padding: '0.75rem',
+    background: '#1e1e1e',
+    border: '1px solid #4a5568',
+    borderRadius: '4px',
   }
   
   const diffContainerStyles: React.CSSProperties = {
@@ -370,17 +518,37 @@ function GitHistory() {
                     e.currentTarget.style.transform = 'translateX(0)'
                   }}
                 >
-                  <div>
-                    <span style={hashStyles}>{commit.shortHash}</span> • {' '}
-                    <span>{new Date(commit.date).toLocaleString('en-US', { 
-                      timeZone: 'UTC',
-                      hour: 'numeric',
-                      minute: 'numeric',
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric'
-                    })}</span> • {' '}
-                    <span>{commit.author}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <span style={hashStyles}>{commit.shortHash}</span> • {' '}
+                      <span>{new Date(commit.date).toLocaleString('en-US', { 
+                        timeZone: 'UTC',
+                        hour: 'numeric',
+                        minute: 'numeric',
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                      })}</span> • {' '}
+                      <span>{commit.author}</span>
+                    </div>
+                    <button
+                      style={aiButtonStyles}
+                      onClick={(e) => generateDescription(commit, e)}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = '#5a6578'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#4a5568'
+                      }}
+                      disabled={generatingDescriptions.has(commit.hash)}
+                    >
+                      {generatingDescriptions.has(commit.hash) 
+                        ? 'Generating...' 
+                        : generatedDescriptions.has(commit.hash)
+                        ? 'Regenerate AI Description'
+                        : 'Generate AI Description'
+                      }
+                    </button>
                   </div>
                   <div style={{ marginTop: '0.25rem' }}>{commit.message}</div>
                   <div style={statsStyles}>
@@ -388,6 +556,19 @@ function GitHistory() {
                     <span style={{ color: '#22c55e' }}>+{commit.stats.insertions}</span>, {' '}
                     <span style={{ color: '#ef4444' }}>-{commit.stats.deletions}</span>
                   </div>
+                  {generatedDescriptions.has(commit.hash) && (
+                    <div style={generatedBoxStyles}>
+                      <div style={{ fontWeight: 'bold', color: '#fbbf24', marginBottom: '0.5rem' }}>
+                        AI Generated:
+                      </div>
+                      <div style={{ fontWeight: 'bold', marginBottom: '0.25rem' }}>
+                        {generatedDescriptions.get(commit.hash)?.title}
+                      </div>
+                      <div style={{ fontSize: '0.875rem', color: '#cccccc', whiteSpace: 'pre-wrap' }}>
+                        {generatedDescriptions.get(commit.hash)?.description}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
               
