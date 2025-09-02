@@ -134,7 +134,7 @@ function App() {
           onMouseEnter={(e) => !loading && (e.currentTarget.style.background = '#444444')}
           onMouseLeave={(e) => (e.currentTarget.style.background = '#333333')}
         >
-          Call hellos()
+          Call hello()
         </button>
 
         <button

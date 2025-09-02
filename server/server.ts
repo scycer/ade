@@ -1,3 +1,4 @@
+import { watch } from "fs";
 
 interface JsonRpcRequest {
   jsonrpc: "2.0";
@@ -69,36 +70,65 @@ async function handleRpc(request: JsonRpcRequest): Promise<JsonRpcResponse> {
   }
 }
 
-Bun.serve({
+// Store WebSocket clients for hot reload
+const wsClients = new Set<any>();
+
+const server = Bun.serve({
   port: 3000,
-  hostname: "0.0.0.0",  // Listen on all network interfaces
+  hostname: "0.0.0.0",
   async fetch(req) {
     const url = new URL(req.url);
     
     if (url.pathname === "/" || url.pathname === "/index.html") {
-      return new Response(await Bun.file("./index.html").text(), {
+      // Always serve fresh HTML for hot reload
+      const html = await Bun.file("../ui/index.html").text();
+      
+      // Inject hot reload client script
+      const htmlWithHMR = html.replace(
+        '</body>',
+        `<script>
+          // Simple hot reload client
+          let ws = new WebSocket('ws://' + location.host + '/hmr');
+          ws.onmessage = () => location.reload();
+          ws.onclose = () => setTimeout(() => location.reload(), 1000);
+        </script>
+        </body>`
+      );
+      
+      return new Response(htmlWithHMR, {
         headers: { "Content-Type": "text/html" },
       });
     }
     
+    // WebSocket endpoint for hot reload notifications
+    if (url.pathname === "/hmr") {
+      const success = server.upgrade(req);
+      if (success) return undefined;
+    }
+    
     // Bundle and serve TypeScript/JSX files with dependencies
     if (url.pathname.endsWith('.tsx') || url.pathname.endsWith('.ts') || url.pathname.endsWith('.jsx') || url.pathname.endsWith('.js')) {
-      const filePath = "." + url.pathname;
+      const filePath = "../ui" + url.pathname;
       const file = Bun.file(filePath);
       
       if (await file.exists()) {
-        // Use Bun.build to bundle the file with all its dependencies
+        // In development, always rebuild to get latest changes
         const result = await Bun.build({
           entrypoints: [filePath],
           target: "browser",
           format: "esm",
+          // Add source maps for better debugging
+          sourcemap: "inline",
         });
         
         if (result.success && result.outputs.length > 0) {
           const output = await result.outputs[0].text();
+          
           return new Response(output, {
             headers: { 
               "Content-Type": "application/javascript",
+              // Prevent caching in development
+              "Cache-Control": "no-cache, no-store, must-revalidate",
             },
           });
         }
@@ -149,12 +179,59 @@ Bun.serve({
     return new Response("Not Found", { status: 404 });
   },
   
-  development: {
-    hmr: true,
-    console: true,
+  websocket: {
+    message(ws, message) {
+      // Handle WebSocket messages if needed
+    },
+    open(ws) {
+      console.log("✅ Hot reload client connected");
+      wsClients.add(ws);
+    },
+    close(ws) {
+      wsClients.delete(ws);
+    },
   },
 });
+
+// Watch for file changes
+const watchDirs = ["../ui/src", "../ui/index.html"];
+let debounceTimer: Timer | null = null;
+
+function setupWatcher() {
+  watchDirs.forEach(dir => {
+    try {
+      watch(dir, { recursive: true }, (event, filename) => {
+        if (filename && (filename.endsWith('.tsx') || filename.endsWith('.ts') || filename.endsWith('.jsx') || filename.endsWith('.html'))) {
+          // Debounce to avoid multiple reloads
+          if (debounceTimer) clearTimeout(debounceTimer);
+          
+          debounceTimer = setTimeout(() => {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`\n🔄 [${timestamp}] Change detected: ${filename}`);
+            console.log("   Triggering browser reload...");
+            
+            // Notify all connected clients to reload
+            wsClients.forEach(ws => {
+              try {
+                ws.send("reload");
+              } catch (e) {
+                // Client might be disconnected
+                wsClients.delete(ws);
+              }
+            });
+          }, 100);
+        }
+      });
+    } catch (e) {
+      // If directory doesn't exist yet, ignore
+    }
+  });
+}
+
+setupWatcher();
 
 console.log("🚀 Server running at http://0.0.0.0:3000");
 console.log("   Local: http://localhost:3000");
 console.log("   Network: http://<your-ip>:3000");
+console.log("   Watching: ../ui/src, ../ui/index.html");
+console.log("   Hot reload enabled ✨");
