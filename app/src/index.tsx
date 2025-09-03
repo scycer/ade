@@ -15,6 +15,16 @@ const server = serve({
         });
       },
     },
+
+    "/api/scratch": {
+      async GET() {
+        const scratchFile = Bun.file("../docs/SCRATCH.md");
+        const scratchContent = await scratchFile.text();
+        return Response.json({
+          content: scratchContent,
+        });
+      },
+    },
   },
 
   development: process.env.NODE_ENV !== "production" && {
