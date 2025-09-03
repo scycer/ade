@@ -1,0 +1,11 @@
+# Development Dockerfile - minimal, everything is mounted
+FROM oven/bun:latest
+
+# Set working directory
+WORKDIR /app
+
+# Expose the development server port
+EXPOSE 3000
+
+# Start the development server with hot reload
+CMD ["bun", "--hot", "src/index.tsx"]

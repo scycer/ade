@@ -8,7 +8,7 @@ const server = serve({
 
     "/api/todo": {
       async GET() {
-        const todoFile = Bun.file("../docs/TODO.md");
+        const todoFile = Bun.file("./docs/TODO.md");
         const todoContent = await todoFile.text();
         return Response.json({
           content: todoContent,
@@ -18,7 +18,7 @@ const server = serve({
 
     "/api/scratch": {
       async GET() {
-        const scratchFile = Bun.file("../docs/SCRATCH.md");
+        const scratchFile = Bun.file("./docs/SCRATCH.md");
         const scratchContent = await scratchFile.text();
         return Response.json({
           content: scratchContent,

@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  ade-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: ade-dev
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      # Mount entire app directory
+      - ./app:/app
+      # Mount docs directory where app expects it
+      - ./docs:/app/docs:ro
+    environment:
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=${PORT:-3000}
+    env_file:
+      - .env
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    networks:
+      - ade-network
+    command: sh -c "bun install && bun --hot src/index.tsx"
+
+networks:
+  ade-network:
+    driver: bridge

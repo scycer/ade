@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  ade-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: ade-prod
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      # Mount docs directory for API endpoints (read-only)
+      - ./docs:/docs:ro
+    environment:
+      - NODE_ENV=production
+      - PORT=${PORT:-3000}
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - ade-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  ade-network:
+    driver: bridge

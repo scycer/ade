@@ -1,9 +1,13 @@
 ## Focus
 Enrolment Refactor - Test manually and make E2E tests for enrolment refactor
+Coach AI - Clickup page review
 Referrals - update from justin comments
 
+
 ## Next
-Content Embedding - Understand codebase, deployment and logical flow between things
+[AI] Check prod deployment from Alvin
+[ADE] Update blank tab page chrome work to ADE
+[Content Embedding] Understand codebase, deployment and logical flow between things
 Find better way to organise workspaces (https://claude.ai/chat/e35b2818-638d-4e69-9fb0-a415e3e58fd8)
 [OpenRouter] Set up OpenRouter account for organization
   Create organizational account

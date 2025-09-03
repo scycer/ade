@@ -1,0 +1,39 @@
+# Production Dockerfile with multi-stage build
+FROM oven/bun:latest AS builder
+
+# Set working directory
+WORKDIR /build
+
+# Copy package files
+COPY app/package.json app/bun.lockb* ./app/
+
+# Install dependencies
+WORKDIR /build/app
+RUN bun install --production
+
+# Copy application source
+COPY app/ ./
+
+# Build the application
+RUN bun run build
+
+# Production stage
+FROM oven/bun:distroless
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from builder
+COPY --from=builder /build/app/dist ./dist
+COPY --from=builder /build/app/src ./src
+COPY --from=builder /build/app/node_modules ./node_modules
+COPY --from=builder /build/app/package.json ./
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Expose the production server port
+EXPOSE 3000
+
+# Start the production server
+CMD ["bun", "src/index.tsx"]
