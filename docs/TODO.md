@@ -2,21 +2,20 @@
 [<Category>] <Title>
 
 ## Today Focus (1.5hr left)
-- Cursor merge in & Loom
-Enrolment Refactor - Test manually
-Coach AI - Clickup page review
-Referrals - remove optional message
-Referrals - make tickets
-CLient side token - non black box
-
-Enrolment Refactor - E2E tests
+[Process] Cursor merge in & Loom
+[Testing] Enrolment Refactor - Test manually
+[AI] Coach AI - Clickup page review
+[Feature] Referrals - remove optional message
+[Feature] Referrals - make tickets
+[Security] Client side token - non black box
+[Testing] Enrolment Refactor - E2E tests
 
 
 ## Next
-- Intercom (messages, histroy, intergrated links, chat relevance)
-- Costing for chatbot conversation
-- Summarise for Justin - playback for Ron's work, what is it, why important
-- Tech video loom for tech items
+[Feature] Intercom (messages, history, integrated links, chat relevance)
+[Planning] Costing for chatbot conversation
+[Documentation] Summarise for Justin - playback for Ron's work, what is it, why important
+[Documentation] Tech video loom for tech items
 
 ## Backlog
 [AI] Check prod deployment from Alvin
@@ -109,34 +108,34 @@ Find better way to organise workspaces (https://claude.ai/chat/e35b2818-638d-4e6
 ## Personal/Arch OS
 
 ### Work Items
-Kolbs idea (TBD Justin)
-AI learn more with Tan
-AI - show team my workflow to devs, AI progress preso for whole team
+[Planning] Kolbs idea (TBD Justin)
+[Learning] AI learn more with Tan
+[Team] AI - show team my workflow to devs, AI progress preso for whole team
 
 ### MEDIUM PRIORITY
-Implement keyboard-first file picker
+[Dev Environment] Implement keyboard-first file picker
   - Options: fzf + fd/ripgrep combo
   - Or: broot, nnn with preview, or custom TUI
   - Must support: navigate folders, ripgrep search, preview
 
-AGS improvements:
+[Dev Environment] AGS improvements:
   - Integrate notifications into sidebar (not floating)
   - Fix app launcher: auto-select first item, better styling
   - Add to bar: volume indicator, next calendar event
 
-Setup voice to text
+[Dev Environment] Setup voice to text
 
 ### LOW PRIORITY
-Nexo enhancements:
+[Dev Environment] Nexo enhancements:
   - Auto-export Claude.ai chats (check for API/browser automation)
   - Export format: markdown with metadata
   - Local RAG for searching insights (consider ollama + vector DB)
   - Self-documenting static site (mkdocs/hugo)
 
-Google profile cleanup
+[Dev Environment] Google profile cleanup
   - Export saved passwords first
   - Remove old form data and saved sites
 
-System cleanup
+[Dev Environment] System cleanup
   - Remove unused apps from launcher list
   - Check .desktop files in ~/.local/share/applications/
