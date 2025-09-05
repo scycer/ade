@@ -1,10 +1,24 @@
-## Focus
-Enrolment Refactor - Test manually and make E2E tests for enrolment refactor
+## FORMAT
+[<Category>] <Title>
+
+## Today Focus (1.5hr left)
+- Cursor merge in & Loom
+Enrolment Refactor - Test manually
 Coach AI - Clickup page review
-Referrals - update from justin comments
+Referrals - remove optional message
+Referrals - make tickets
+CLient side token - non black box
+
+Enrolment Refactor - E2E tests
 
 
 ## Next
+- Intercom (messages, histroy, intergrated links, chat relevance)
+- Costing for chatbot conversation
+- Summarise for Justin - playback for Ron's work, what is it, why important
+- Tech video loom for tech items
+
+## Backlog
 [AI] Check prod deployment from Alvin
 [ADE] Update blank tab page chrome work to ADE
 [Content Embedding] Understand codebase, deployment and logical flow between things
@@ -50,9 +64,6 @@ Find better way to organise workspaces (https://claude.ai/chat/e35b2818-638d-4e6
 [Security] Check all env and codebase, find the NEXT_ variables that are in build files or the deployed env when they shouldn't be in .env locally
 [UX] Finder field is multiline but doesn't expand with text or dragged (so it's just one line always except inside the field itself)
 [UX] Check the wrapping of text for pill/badge component
-
-## Backlog
-
 [Security] Check all 3rd party services and their tokens with expiry times
 [Security] Check that lower env cannot accept a signup of a non @icanstudy.com email in auth0
 [Security] Export Auth0 into repo to make sure we have the latest
