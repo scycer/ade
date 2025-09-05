@@ -2,16 +2,12 @@
 [<Category>] <Title>
 
 ## Today Focus (1.5hr left)
-[Process] Cursor merge in & Loom
-[Testing] Enrolment Refactor - Test manually
-[AI] Coach AI - Clickup page review
 [Feature] Referrals - remove optional message
-[Feature] Referrals - make tickets
-[Security] Client side token - non black box
-[Testing] Enrolment Refactor - E2E tests
-
 
 ## Next
+[Testing] Enrolment Refactor - Test manually
+[Testing] Enrolment Refactor - E2E tests
+[Feature] Referrals - make tickets
 [Feature] Intercom (messages, history, integrated links, chat relevance)
 [Planning] Costing for chatbot conversation
 [Documentation] Summarise for Justin - playback for Ron's work, what is it, why important
