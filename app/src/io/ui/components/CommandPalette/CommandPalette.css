@@ -1,0 +1,82 @@
+.command-palette-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 10vh;
+  z-index: 1000;
+}
+
+.command-palette {
+  width: 600px;
+  max-width: 90vw;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.command-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: #0a0a0a;
+  border: none;
+  border-bottom: 1px solid #333;
+  color: #fff;
+  font-size: 1.1rem;
+  font-family: 'Fira Code', monospace;
+}
+
+.command-input:focus {
+  outline: none;
+  background: #111;
+}
+
+.command-suggestions {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.command-item {
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.command-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.command-item.selected {
+  background: #2a2a2a;
+  border-left: 3px solid #4a9eff;
+}
+
+.command-label {
+  color: #fff;
+}
+
+.command-shortcut {
+  color: #666;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+.command-help {
+  display: flex;
+  gap: 2rem;
+  padding: 0.75rem 1.5rem;
+  background: #0a0a0a;
+  border-top: 1px solid #333;
+  font-size: 0.85rem;
+  color: #666;
+}

@@ -8,9 +8,27 @@ import { ExecutionPage } from './pages/Execution/ExecutionPage';
 import { ValidationPage } from './pages/Validation/ValidationPage';
 import { KnowledgePage } from './pages/Knowledge/KnowledgePage';
 import { ToolsPage } from './pages/Tools/ToolsPage';
+import { KeyboardApp } from './KeyboardApp';
 
 export function App() {
   const [activeSection, setActiveSection] = useState('tasks');
+  const [uiMode, setUiMode] = useState<'keyboard' | 'mouse'>('keyboard');
+
+  // Toggle between keyboard and mouse UI with Alt+M
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key === 'm') {
+        e.preventDefault();
+        setUiMode(prev => prev === 'keyboard' ? 'mouse' : 'keyboard');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  if (uiMode === 'keyboard') {
+    return <KeyboardApp />;
+  }
 
   const renderContent = () => {
     switch (activeSection) {
