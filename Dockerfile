@@ -8,4 +8,4 @@ WORKDIR /app
 EXPOSE 6969
 
 # Start the development server with hot reload
-CMD ["bun", "run", "dev"]
+CMD ["bun", "run", "start"]
