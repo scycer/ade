@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 
 import { $ } from "bun";
-import { writeFile } from "node:fs/promises";
+import { writeFile, stat } from "node:fs/promises";
 import { watch } from "node:fs";
+import { join, relative } from "node:path";
 
 interface CheckResult {
   name: string;
@@ -98,28 +99,77 @@ await runValidation();
 console.log("\n👁️  Watching for file changes...");
 console.log("Press Ctrl+C to stop\n");
 
-const watchPaths = ["./src"];
-const ignorePaths = [/node_modules/, /\.git/, /dist/, /validation-report\.txt/];
+const watchPaths = ["./src", "./scripts", "."];
+const ignorePaths = [/node_modules/, /\.git/, /dist/, /validation-report\.txt/, /bun\.lockb/];
 
-// Set up file watchers
+// Debounce mechanism to prevent multiple runs
+let debounceTimer: Timer | null = null;
+let pendingValidation = false;
+
+async function debouncedValidation() {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer);
+  }
+  
+  pendingValidation = true;
+  
+  debounceTimer = setTimeout(async () => {
+    if (pendingValidation) {
+      pendingValidation = false;
+      await runValidation();
+    }
+  }, 100); // Run after 100ms of no changes
+}
+
+// Set up file watchers with polling for better detection
 watchPaths.forEach(path => {
   try {
-    watch(path, { recursive: true }, async (_eventType, filename) => {
+    watch(path, { 
+      recursive: true,
+      persistent: true // Keep watching even if directory is renamed/recreated
+    }, async (eventType, filename) => {
       if (!filename) return;
 
       // Skip if file matches ignore patterns
       if (ignorePaths.some(pattern => pattern.test(filename))) return;
 
-      // Skip non-code files
-      if (!/\.(ts|tsx|js|jsx|json)$/.test(filename)) return;
+      // Watch all relevant file types
+      if (!/\.(ts|tsx|js|jsx|json|mjs|cjs)$/.test(filename)) return;
 
-      console.log(`\n🔄 Change detected in: ${filename}`);
-      await runValidation();
+      console.log(`\n🔄 Change detected (${eventType}): ${filename}`);
+      await debouncedValidation();
     });
   } catch (error) {
     console.warn(`⚠️  Could not watch ${path}:`, error);
   }
 });
+
+// Track file modification times for extra detection
+const fileModTimes = new Map<string, number>();
+let lastValidationTime = Date.now();
+
+// Function to check if files have been modified
+async function checkForModifications() {
+  const files = await $`find ./src ./scripts -type f -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -newer /tmp/.last-validation-check 2>/dev/null || true`.quiet().text();
+  
+  if (files.trim()) {
+    const changedFiles = files.trim().split('\n').filter(f => f);
+    if (changedFiles.length > 0) {
+      console.log(`\n🔍 Detected ${changedFiles.length} file(s) changed via polling`);
+      await debouncedValidation();
+    }
+  }
+  
+  // Update timestamp file
+  await $`touch /tmp/.last-validation-check`.quiet();
+}
+
+// Also use polling as a backup for missed events
+setInterval(async () => {
+  if (!pendingValidation && !debounceTimer) {
+    await checkForModifications();
+  }
+}, 2000); // Check every 2 seconds for more aggressive detection
 
 // Keep the process running
 process.on("SIGINT", () => {

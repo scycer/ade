@@ -2,6 +2,12 @@
 - Basic bun app with UI
 
 # TODO
+- List out projects
+- Open a project
+- See list of files in a tree or flat list
+- See git status (like sidebar in vscode)
+- See git history
+
 
 # ADE Skill progression
 - Read a file and show on UI

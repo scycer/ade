@@ -1,5 +1,5 @@
-import index from "./ui/index.html";
-import * as tools from "./tools";
+import index from "../ui/index.html";
+import * as tools from "../tools";
 
 export const routes = {
   // Serve index.html for all unmatched routes.
