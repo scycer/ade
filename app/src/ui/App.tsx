@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./index.css";
 
 interface Tool {
   name: string;
@@ -23,25 +24,32 @@ export function App() {
   }, []);
 
   return (
-    <div>
-      <h1>ADE - AI-first Development Environment</h1>
-      <h2>Available Tools</h2>
-      {loading ? (
-        <p>Loading tools...</p>
-      ) : (
-        <div>
-          {tools.map((tool) => (
-            <div key={tool.name}>
-              <h3>{tool.name}</h3>
-              <ul>
-                {tool.methods.map((method) => (
-                  <li key={method}>{method}</li>
-                ))}
-              </ul>
+    <div className="frame-window">
+      <div className="split-container">
+        <div className="left-panel">
+          <h2>Available Tools</h2>
+          {loading ? (
+            <p>Loading tools...</p>
+          ) : (
+            <div>
+              {tools.map((tool) => (
+                <div key={tool.name}>
+                  <h3>{tool.name}</h3>
+                  <ul>
+                    {tool.methods.map((method) => (
+                      <li key={method}>{method}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
+        <div className="right-panel">
+          <h2>Details</h2>
+          <p>Select a tool to view details</p>
+        </div>
+      </div>
     </div>
   );
 }
