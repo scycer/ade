@@ -1,0 +1,261 @@
+.execution-page {
+  padding: 2rem;
+  max-width: 1200px;
+}
+
+.execution-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.exec-btn {
+  padding: 0.5rem 1rem;
+  background: #4a5568;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.exec-btn:hover {
+  background: #5a6578;
+}
+
+.exec-btn.stop {
+  background: #e53e3e;
+}
+
+.exec-btn.stop:hover {
+  background: #f54e4e;
+}
+
+.execution-status {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #999;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #666;
+}
+
+.status-dot.active {
+  background: #48bb78;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.execution-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.execution-timeline,
+.execution-output {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+
+.execution-timeline h3,
+.execution-output h3 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.timeline-marker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.timeline-item.completed .timeline-marker {
+  background: #2d5a2d;
+  color: #48bb78;
+}
+
+.timeline-item.running .timeline-marker {
+  background: #2a3548;
+  color: #4a9eff;
+}
+
+.timeline-content {
+  flex: 1;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.step-name {
+  color: #fff;
+}
+
+.step-duration {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.progress-bar {
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4a9eff;
+  transition: width 0.3s ease;
+}
+
+.output-terminal {
+  background: #1a1a1a;
+  border-radius: 4px;
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.9rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.output-line {
+  margin-bottom: 0.5rem;
+  color: #999;
+}
+
+.output-line.success {
+  color: #48bb78;
+}
+
+.output-line.info {
+  color: #4a9eff;
+}
+
+.cursor-blink {
+  display: inline-block;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.file-changes {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.file-changes h3 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+.changes-list {
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.change-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.change-icon {
+  width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.change-item.modified {
+  background: rgba(74, 149, 255, 0.1);
+}
+
+.change-item.modified .change-icon {
+  color: #4a9eff;
+}
+
+.change-item.added {
+  background: rgba(72, 187, 120, 0.1);
+}
+
+.change-item.added .change-icon {
+  color: #48bb78;
+}
+
+.change-path {
+  flex: 1;
+  color: #fff;
+}
+
+.change-stats {
+  color: #666;
+}
+
+.execution-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.metric {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.metric-label {
+  display: block;
+  color: #999;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  display: block;
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 500;
+}

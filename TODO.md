@@ -11,6 +11,7 @@
 
 # IDEAS
 - Repo skeleton
+- Dynamic MCP server for Claude Code
 - Demo repo to work on (Mini games for kids)
 - Worktrees
 - Docs

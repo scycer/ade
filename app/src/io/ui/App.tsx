@@ -1,22 +1,46 @@
+import React, { useState } from 'react';
 import "./index.css";
-import { FileExplorer } from "../../domains/files";
-import { ChatDemo } from "../../domains/chat";
+import { Sidebar } from './components/Sidebar/Sidebar';
+import { TasksPage } from './pages/Tasks/TasksPage';
+import { ResearchPage } from './pages/Research/ResearchPage';
+import { PlanningPage } from './pages/Planning/PlanningPage';
+import { ExecutionPage } from './pages/Execution/ExecutionPage';
+import { ValidationPage } from './pages/Validation/ValidationPage';
+import { KnowledgePage } from './pages/Knowledge/KnowledgePage';
+import { ToolsPage } from './pages/Tools/ToolsPage';
 
 export function App() {
+  const [activeSection, setActiveSection] = useState('tasks');
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'tasks':
+        return <TasksPage />;
+      case 'research':
+        return <ResearchPage />;
+      case 'planning':
+        return <PlanningPage />;
+      case 'execution':
+        return <ExecutionPage />;
+      case 'validation':
+        return <ValidationPage />;
+      case 'knowledge':
+        return <KnowledgePage />;
+      case 'tools':
+        return <ToolsPage />;
+      default:
+        return <TasksPage />;
+    }
+  };
+
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>ADE - AI-first Development Environment</h1>
-      </header>
+      <Sidebar 
+        activeSection={activeSection} 
+        onSectionChange={setActiveSection} 
+      />
       <main className="app-main">
-        <div style={{ display: 'flex', gap: '2rem' }}>
-          <div style={{ flex: 1 }}>
-            <FileExplorer />
-          </div>
-          <div style={{ flex: 1 }}>
-            <ChatDemo />
-          </div>
-        </div>
+        {renderContent()}
       </main>
     </div>
   );

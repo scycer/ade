@@ -1,0 +1,277 @@
+.validation-page {
+  padding: 2rem;
+  max-width: 1200px;
+}
+
+.validation-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.overview-card {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.overview-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  color: #fff;
+}
+
+.overview-card span {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.overview-card.passed {
+  border-color: #48bb78;
+}
+
+.overview-card.passed h3 {
+  color: #48bb78;
+}
+
+.overview-card.running {
+  border-color: #4a9eff;
+}
+
+.overview-card.running h3 {
+  color: #4a9eff;
+}
+
+.overview-card.failed {
+  border-color: #e53e3e;
+}
+
+.overview-card.failed h3 {
+  color: #e53e3e;
+}
+
+.validation-list {
+  margin-bottom: 2rem;
+}
+
+.validation-list h3 {
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.validation-item {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.validation-item.passed {
+  border-color: #48bb78;
+}
+
+.validation-item.running {
+  border-color: #4a9eff;
+}
+
+.validation-item.failed {
+  border-color: #e53e3e;
+}
+
+.validation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.validation-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.validation-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #333;
+}
+
+.validation-icon.passed {
+  background: #2d5a2d;
+  color: #48bb78;
+}
+
+.validation-icon.running {
+  background: #2a3548;
+  color: #4a9eff;
+}
+
+.validation-icon.failed {
+  background: #5a2d2d;
+  color: #e53e3e;
+}
+
+.validation-time {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.validation-results {
+  display: flex;
+  gap: 1rem;
+}
+
+.result-item {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.result-item.success {
+  background: rgba(72, 187, 120, 0.2);
+  color: #48bb78;
+}
+
+.result-item.error {
+  background: rgba(229, 62, 62, 0.2);
+  color: #e53e3e;
+}
+
+.result-item.warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.validation-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: #333;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4a9eff;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: #999;
+  font-size: 0.85rem;
+}
+
+.validation-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.test-output,
+.validation-config {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+
+.test-output h3,
+.validation-config h3 {
+  margin: 0 0 1rem 0;
+  color: #fff;
+}
+
+.output-console {
+  background: #1a1a1a;
+  border-radius: 4px;
+  padding: 1rem;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.output-entry {
+  margin-bottom: 0.5rem;
+  color: #999;
+}
+
+.output-entry.success strong {
+  color: #48bb78;
+}
+
+.output-summary {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+  color: #999;
+  line-height: 1.5;
+}
+
+.config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.config-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.config-label {
+  color: #999;
+}
+
+.config-value {
+  color: #fff;
+  font-weight: 500;
+}
+
+.validation-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-btn {
+  padding: 0.75rem 1.5rem;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  color: #999;
+  cursor: pointer;
+}
+
+.action-btn:hover {
+  border-color: #666;
+  color: #fff;
+}
+
+.action-btn.primary {
+  background: #4a5568;
+  border-color: #4a5568;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: #5a6578;
+}
