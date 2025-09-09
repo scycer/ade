@@ -1,6 +1,6 @@
 import "./index.css";
-import { FileExplorer } from "./components/FileExplorer/FileExplorer";
-import { ChatDemo } from "./components/ChatDemo";
+import { FileExplorer } from "../../domains/files";
+import { ChatDemo } from "../../domains/chat";
 
 export function App() {
   return (

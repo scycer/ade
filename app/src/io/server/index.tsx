@@ -1,7 +1,7 @@
 import { serve } from "bun";
 import index from "../ui/index.html";
-import { listFiles, readFile } from "./routes/files";
-import { assistantAgent } from "../../mastra";
+import { listFiles, readFile } from "../../domains/files/server";
+import { handleChat } from "../../domains/chat/server";
 
 const server = serve({
   routes: {
@@ -36,54 +36,19 @@ const server = serve({
       return Response.json({ content: result.content });
     },
 
-    "/api/chat": async (req) => {
-      if (req.method !== "POST") {
-        return Response.json({ error: "Method not allowed" }, { status: 405 });
-      }
-
-      try {
-        const body = await req.json();
-        const { message } = body;
-
-        if (!message) {
-          return Response.json({ error: "Message is required" }, { status: 400 });
-        }
-
-        const result = await assistantAgent.generate([
-          {
-            role: "user",
-            content: message,
-          },
-        ]);
-
-        return Response.json({
-          response: result.text,
-          model: Bun.env.DEFAULT_MODEL || 'openai/gpt-4o-mini',
-          usage: result.usage,
-        });
-      } catch (error) {
-        console.error("Chat error:", error);
-        return Response.json(
-          {
-            error: error instanceof Error ? error.message : "Failed to process chat request",
-            details: Bun.env.NODE_ENV === "development" ? error : undefined
-          },
-          { status: 500 }
-        );
-      }
-    },
+    "/api/chat": handleChat,
 
     // Serve index.html for all unmatched routes.
     "/*": index,
 
     "/api/hello": {
-      async GET(req) {
+      async GET() {
         return Response.json({
           message: "Hello, world!",
           method: "GET",
         });
       },
-      async PUT(req) {
+      async PUT() {
         return Response.json({
           message: "Hello, world!",
           method: "PUT",

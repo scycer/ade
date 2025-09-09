@@ -10,6 +10,7 @@
 
 
 # IDEAS
+- Repo skeleton
 - Demo repo to work on (Mini games for kids)
 - Worktrees
 - Docs
