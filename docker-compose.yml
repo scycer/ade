@@ -13,8 +13,8 @@ services:
       # Mount Data
       - ./data:/data
 
-      # Mount Codebases
-      - ./codebases:/codebases
+      # Mount Projects
+      - ./projects:/projects
     env_file:
       - .env
     restart: unless-stopped

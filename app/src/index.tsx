@@ -1,31 +1,19 @@
 import { serve } from "bun";
-import index from "./index.html";
+import index from "./ui/index.html";
+import { filesService } from "./tools/files/files.service";
+import * as tools from "./tools";
 
 const server = serve({
   routes: {
     // Serve index.html for all unmatched routes.
     "/*": index,
 
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
-
-    "/api/hello/:name": async req => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
+    "/api/tools": async () => {
+      const toolsList = Object.entries(tools).map(([name, service]) => ({
+        name,
+        methods: Object.keys(service as any),
+      }));
+      return Response.json({ tools: toolsList });
     },
   },
 
