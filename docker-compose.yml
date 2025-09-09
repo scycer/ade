@@ -1,0 +1,20 @@
+services:
+  ade:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ade
+    ports:
+      - "${PORT:-6969}:6969"
+    volumes:
+      # Mount ADE
+      - ./app:/app
+
+      # Mount Data
+      - ./data:/data
+
+      # Mount Codebases
+      - ./codebases:/codebases
+    env_file:
+      - .env
+    restart: unless-stopped

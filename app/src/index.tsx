@@ -6,24 +6,26 @@ const server = serve({
     // Serve index.html for all unmatched routes.
     "/*": index,
 
-    "/api/todo": {
-      async GET() {
-        const todoFile = Bun.file("./docs/TODO.md");
-        const todoContent = await todoFile.text();
+    "/api/hello": {
+      async GET(req) {
         return Response.json({
-          content: todoContent,
+          message: "Hello, world!",
+          method: "GET",
+        });
+      },
+      async PUT(req) {
+        return Response.json({
+          message: "Hello, world!",
+          method: "PUT",
         });
       },
     },
 
-    "/api/scratch": {
-      async GET() {
-        const scratchFile = Bun.file("./docs/SCRATCH.md");
-        const scratchContent = await scratchFile.text();
-        return Response.json({
-          content: scratchContent,
-        });
-      },
+    "/api/hello/:name": async req => {
+      const name = req.params.name;
+      return Response.json({
+        message: `Hello, ${name}!`,
+      });
     },
   },
 

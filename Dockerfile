@@ -5,7 +5,7 @@ FROM oven/bun:latest
 WORKDIR /app
 
 # Expose the development server port
-EXPOSE 3000
+EXPOSE 6969
 
 # Start the development server with hot reload
-CMD ["bun", "--hot", "src/index.tsx"]
+CMD ["bun", "run", "dev"]
