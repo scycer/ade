@@ -26,6 +26,3 @@
 - Search
 
 - Claude Code
-  -
-
-

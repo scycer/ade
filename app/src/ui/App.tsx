@@ -1,54 +1,44 @@
 import { useEffect, useState } from "react";
 import "./index.css";
 
-interface Tool {
-  name: string;
-  methods: string[];
-}
-
 export function App() {
-  const [tools, setTools] = useState<Tool[]>([]);
+  const [message, setMessage] = useState<string>("");
+  const [nodeId, setNodeId] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/tools")
+    fetch("/api/brain/hello")
       .then((res) => res.json())
       .then((data) => {
-        setTools(data.tools);
+        if (data.error) {
+          setMessage(`Error: ${data.error}`);
+        } else {
+          setMessage(data.message || "Hello from Brain!");
+          setNodeId(data.node_id || "");
+        }
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Failed to fetch tools:", error);
+        console.error("Failed to fetch from brain:", error);
+        setMessage("Error connecting to brain");
         setLoading(false);
       });
   }, []);
 
   return (
     <div className="frame-window">
-      <div className="split-container">
-        <div className="left-panel">
-          <h2>Available Tools</h2>
-          {loading ? (
-            <p>Loading tools...</p>
-          ) : (
-            <div>
-              {tools.map((tool) => (
-                <div key={tool.name}>
-                  <h3>{tool.name}</h3>
-                  <ul>
-                    {tool.methods.map((method) => (
-                      <li key={method}>{method}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="right-panel">
-          <h2>Details</h2>
-          <p>Select a tool to view details</p>
-        </div>
+      <div className="content-center">
+        <h1>Brain Architecture Demo</h1>
+        {loading ? (
+          <p>Connecting to brain...</p>
+        ) : (
+          <>
+            <p className="message">{message}</p>
+            {nodeId && (
+              <p className="node-info">Node ID: {nodeId}</p>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

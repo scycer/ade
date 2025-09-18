@@ -1,0 +1,877 @@
+---
+LIBRARY: lancedb/lancedb
+SOURCE_ROOT: https://github.com/lancedb/lancedb/blob/main
+UPDATED_AT: September 7, 2025 at 5:24 PM UTC
+---
+
+================================
+CODE SNIPPETS
+================================
+
+TITLE: Defining Sensitive Keys in EmbeddingFunction
+DESCRIPTION: Defines the `getSensitiveKeys()` method within the abstract `EmbeddingFunction` class. This method provides a list of keys in the function options that should be treated as sensitive, preventing users from passing raw values for these keys.
+SOURCE: /docs/src/js/namespaces/embedding/classes/EmbeddingFunction.md
+
+```ts
+protected getSensitiveKeys(): string[]
+```
+
+---
+TITLE: Configuring Read Consistency Interval in LanceDB OSS
+DESCRIPTION: Configures the `readConsistencyInterval` property within LanceDB OSS to control how often the table checks for updates from other processes, impacting read operation consistency. Setting this property to zero provides strong consistency, while a non-zero value enables eventual consistency, balancing performance and data freshness.
+SOURCE: /docs/src/js/interfaces/ConnectionOptions.md
+
+```ts
+optional readConsistencyInterval: number;
+```
+
+---
+TITLE: Serializing Text Embedding Function Arguments with `toJSON`
+DESCRIPTION: Serializes the original constructor arguments of a `TextEmbeddingFunction` to a JSON-compatible format using the `toJSON` method, enabling recreation of the embedding function. This is useful for persisting and restoring embedding functions, inheriting from the base `EmbeddingFunction` class.
+SOURCE: /docs/src/js/namespaces/embedding/classes/TextEmbeddingFunction.md
+
+```ts
+toJSON(): Record<string, any>
+```
+
+---
+TITLE: Creating LanceDB Table and Storing on S3
+DESCRIPTION: Demonstrates creating a `LanceDB` table from a local Lance-format SIFT dataset and preparing it for remote storage on S3. This setup allows for remotely hosting the `LanceDB` table, enabling serverless access and scalable vector search capabilities.
+SOURCE: /docs/src/examples/serverless_lancedb_with_s3_and_lambda.md
+
+```plaintext
+s3://eto-public/datasets/sift/vec_data.lance
+```
+
+```python
+import lance
+sift_dataset = lance.dataset("/path/to/local/vec_data.lance")
+df = sift_dataset.to_table().to_pandas()
+
+import lancedb
+db = lancedb.connect(".")
+table = db.create_table("vector_example", df)
+```
+
+---
+TITLE: Defining Index Name in IndexConfig Interface
+DESCRIPTION: Defines the `name` property within the `IndexConfig` interface. This property specifies the name of an index configured on a column, enabling identification and management of database indexes.
+SOURCE: /docs/src/js/interfaces/IndexConfig.md
+
+```ts
+name: string;
+```
+
+---
+TITLE: Reranking Search Results Using CohereReranker in LanceDB
+DESCRIPTION: Demonstrates how to use the `CohereReranker` with LanceDB to improve search result relevance for vector, FTS, and hybrid queries. This reranker utilizes the Cohere API and requires the `cohere` package and a valid API key, either set as the `COHERE_API_KEY` environment variable or passed directly to the `CohereReranker` constructor.
+SOURCE: /docs/src/reranking/cohere.md
+
+```shell
+pip install cohere
+```
+
+```python
+import numpy
+import lancedb
+from lancedb.embeddings import get_registry
+from lancedb.pydantic import LanceModel, Vector
+from lancedb.rerankers import CohereReranker
+
+embedder = get_registry().get("sentence-transformers").create()
+db = lancedb.connect("~/.lancedb")
+
+class Schema(LanceModel):
+text: str = embedder.SourceField()
+vector: Vector(embedder.ndims()) = embedder.VectorField()
+
+data = [
+{"text": "hello world"},
+{"text": "goodbye world"}
+]
+tbl = db.create_table("test", schema=Schema, mode="overwrite")
+tbl.add(data)
+reranker = CohereReranker(api_key="key")
+
+# Run vector search with a reranker
+result = tbl.search("hello").rerank(reranker=reranker).to_list()
+
+# Run FTS search with a reranker
+result = tbl.search("hello", query_type="fts").rerank(reranker=reranker).to_list()
+
+# Run hybrid search with a reranker
+tbl.create_fts_index("text", replace=True)
+result = tbl.search("hello", query_type="hybrid").rerank(reranker=reranker).to_list()
+
+```
+
+---
+TITLE: Waiting for Index Completion in LanceDB Table
+DESCRIPTION: Waits for asynchronous indexing to complete on a LanceDB `Table` using the `waitForIndex` method. This method accepts an array of `indexNames` and a `timeoutSeconds` parameter, raising an error if indexing does not complete within the specified timeout, ensuring index availability for subsequent operations.
+SOURCE: /docs/src/js/classes/Table.md
+
+```ts
+abstract waitForIndex(indexNames, timeoutSeconds): Promise<void>
+```
+
+---
+TITLE: Creating RRFReranker Instance Using Reciprocal Rank Fusion
+DESCRIPTION: Creates an instance of the `RRFReranker` class, which implements the Reciprocal Rank Fusion (RRF) algorithm for reranking search results. This method provides a convenient way to initialize the reranker with a specified `k` value, influencing the fusion process.
+SOURCE: /docs/src/js/namespaces/rerankers/classes/RRFReranker.md
+
+```ts
+static create(k): Promise<RRFReranker>
+```
+
+---
+TITLE: Analyzing Query Execution Plan with Runtime Metrics
+DESCRIPTION: Provides the `analyzePlan` method to execute a query and return the physical query plan annotated with runtime metrics for debugging and performance analysis. This shows how the query was executed, including metrics such as elapsed time, rows processed, and I/O statistics, aiding in identifying performance bottlenecks.
+SOURCE: /docs/src/js/classes/QueryBase.md
+
+```ts
+analyzePlan(): Promise<string>
+```
+
+```ts
+import * as lancedb from "@lancedb/lancedb"
+
+const db = await lancedb.connect("./.lancedb");
+const table = await db.createTable("my_table", [
+{ vector: [1.1, 0.9], id: "1" },
+]);
+
+const plan = await table.query().nearestTo([0.5, 0.2]).analyzePlan();
+
+Example output (with runtime metrics inlined):
+AnalyzeExec verbose=true, metrics=[]
+ProjectionExec: expr=[id@3 as id, vector@0 as vector, _distance@2 as _distance], metrics=[output_rows=1, elapsed_compute=3.292µs]
+Take: columns="vector, _rowid, _distance, (id)", metrics=[output_rows=1, elapsed_compute=66.001µs, batches_processed=1, bytes_read=8, iops=1, requests=1]
+CoalesceBatchesExec: target_batch_size=1024, metrics=[output_rows=1, elapsed_compute=3.333µs]
+GlobalLimitExec: skip=0, fetch=10, metrics=[output_rows=1, elapsed_compute=167ns]
+FilterExec: _distance@2 IS NOT NULL, metrics=[output_rows=1, elapsed_compute=8.542µs]
+SortExec: TopK(fetch=10), expr=[_distance@2 ASC NULLS LAST], metrics=[output_rows=1, elapsed_compute=63.25µs, row_replacements=1]
+KNNVectorDistance: metric=l2, metrics=[output_rows=1, elapsed_compute=114.333µs, output_batches=1]
+LanceScan: uri=/path/to/data, projection=[vector], row_id=true, row_addr=false, ordered=false, metrics=[output_rows=1, elapsed_compute=103.626µs, bytes_read=549, iops=2, requests=2]
+```
+
+---
+TITLE: Generating Text Embeddings with TextEmbeddingFunction
+DESCRIPTION: Implements the `generateEmbeddings` method within the abstract `TextEmbeddingFunction` class, enabling the creation of numerical representations from text inputs. This method is essential for tasks like semantic search, text classification, and clustering, providing a foundation for various natural language processing applications.
+SOURCE: /docs/src/js/namespaces/embedding/classes/TextEmbeddingFunction.md
+
+```ts
+abstract generateEmbeddings(texts, ...args): Promise<number[][] | Float32Array[] | Float64Array[]>
+```
+
+---
+TITLE: Configuring Lowercase Tokenization in Full Text Search
+DESCRIPTION: Configures the `lowercase` option within `FtsOptions` to control whether tokens are converted to lowercase during full text search indexing. This improves search accuracy by matching queries regardless of case, ensuring that searches are case-insensitive.
+SOURCE: /docs/src/js/interfaces/FtsOptions.md
+
+```ts
+optional lowercase: boolean;
+```
+
+---
+TITLE: Creating Empty Tables with LanceDB Connection
+DESCRIPTION: Creates a new empty `Table` in LanceDB using the `createEmptyTable` method of the `Connection` class. This method allows specifying the table `name`, `schema`, and optional `CreateTableOptions` to define the table structure.
+SOURCE: /docs/src/js/classes/Connection.md
+
+```ts
+abstract createEmptyTable(
+name,
+schema,
+options?): Promise<Table>
+```
+
+---
+TITLE: Handling Vector Search with LanceDB in Lambda
+DESCRIPTION: Implements a Lambda function to perform vector search on a LanceDB table stored in S3 using `lancedb.connect` and `table.search`. This example demonstrates querying a remotely hosted LanceDB table from a serverless environment, providing a scalable solution for vector similarity search.
+SOURCE: /docs/src/examples/serverless_lancedb_with_s3_and_lambda.md
+
+```docker
+FROM public.ecr.aws/lambda/python:3.10
+
+RUN pip3 install --upgrade pip
+RUN pip3 install --no-cache-dir -U numpy --target "${LAMBDA_TASK_ROOT}"
+RUN pip3 install --no-cache-dir -U lancedb --target "${LAMBDA_TASK_ROOT}"
+
+COPY app.py ${LAMBDA_TASK_ROOT}
+
+CMD [ "app.handler" ]
+```
+
+```python
+import json
+import numpy as np
+import lancedb
+
+db = lancedb.connect("s3://eto-public/tables")
+table = db.open_table("vector_example")
+
+def handler(event, context):
+status_code = 200
+
+if event['query_vector'] is None:
+status_code = 404
+return {
+"statusCode": status_code,
+"headers": {
+"Content-Type": "application/json"
+},
+"body": json.dumps({
+"Error ": "No vector to query was issued"
+})
+}
+
+# Shape of SIFT is (128,1M), d=float32
+query_vector = np.array(event['query_vector'], dtype=np.float32)
+
+rs = table.search(query_vector).limit(2).to_list()
+
+return {
+"statusCode": status_code,
+"headers": {
+"Content-Type": "application/json"
+},
+"body": json.dumps(rs)
+}
+```
+
+---
+TITLE: Configuring Distance Type for IVF_FLAT Index
+DESCRIPTION: Configures the `distanceType` property within `IvfFlatOptions` to specify the distance metric used for building the `IVF_FLAT` index, including options like `l2`, `cosine`, `dot`, and `hamming`. Selecting the correct distance type is crucial for accurate vector search results, as the training and search processes must use the same metric.
+SOURCE: /docs/src/js/interfaces/IvfFlatOptions.md
+
+```ts
+optional distanceType: "l2" | "cosine" | "dot" | "hamming";
+```
+
+---
+TITLE: Getting Registered Embedding Functions Length in EmbeddingFunctionRegistry
+DESCRIPTION: Retrieves the number of registered embedding functions within the `EmbeddingFunctionRegistry` class. This method, `length()`, is useful for determining the size of the registry and managing registered embedding functions.
+SOURCE: /docs/src/js/namespaces/embedding/classes/EmbeddingFunctionRegistry.md
+
+```ts
+length(): number
+```
+
+---
+TITLE: Tracking Compaction Statistics: `filesAdded` Property
+DESCRIPTION: Defines the `filesAdded` property within the `CompactionStats` interface, representing the number of new compacted data files added during a compaction operation. This statistic is useful for monitoring and analyzing the performance of compaction processes.
+SOURCE: /docs/src/js/interfaces/CompactionStats.md
+
+```ts
+filesAdded: number;
+```
+
+---
+TITLE: Implementing Full Text Search in VectorQuery
+DESCRIPTION: Implements the `fullTextSearch` method within the `VectorQuery` class to perform full-text searches. This method accepts a query string or a `FullTextQuery` object and optional `FullTextSearchOptions` to configure the search, inheriting from `StandardQueryBase`.
+SOURCE: /docs/src/js/classes/VectorQuery.md
+
+```ts
+fullTextSearch(query, options?): this
+```
+
+---
+TITLE: Defining Logical `And` Operator in Full-Text Queries
+DESCRIPTION: Defines the `And` enumeration member of the `Operator` enum, representing the logical AND operator for full-text search queries. This operator ensures that all specified terms must match for a document to be considered a match, providing precise search results.
+SOURCE: /docs/src/js/enumerations/Operator.md
+
+```ts
+And: "AND";
+```
+
+---
+TITLE: Creating Bitmap Index for Low-Cardinality Columns
+DESCRIPTION: Creates a `Bitmap` index, optimized for columns with a small number of unique values, typically less than a few hundreds, within the `Index` class. This method is beneficial for improving query performance on low-cardinality data.
+SOURCE: /docs/src/js/classes/Index.md
+
+```ts
+static bitmap(): Index
+```
+
+---
+TITLE: Deleting Rows from Table Using Value List
+DESCRIPTION: Demonstrates deleting rows from a table using a list of values with the `delete` method. This approach is useful when removing multiple rows based on a common attribute, such as `id`, by constructing an `IN` clause.
+SOURCE: /docs/src/guides/tables.md
+
+```ts
+const to_remove = [1, 5];
+await tbl.delete(`id IN (${to_remove.join(",")})`)
+await tbl.countRows() // Returns 1
+```
+
+---
+TITLE: Opening Tables Using `openTable()` in LanceDB Connection
+DESCRIPTION: Opens a table in a LanceDB database using the `openTable()` method of the `Connection` class. This method allows users to access existing tables by name, optionally providing `OpenTableOptions` to configure how the table is opened, returning a `Promise` that resolves to a `Table` object.
+SOURCE: /docs/src/js/classes/Connection.md
+
+```ts
+abstract openTable(name, options?): Promise<Table>
+```
+
+---
+TITLE: Generating OpenAI Embeddings with `openai` Library
+DESCRIPTION: Demonstrates generating embeddings using OpenAI's embeddings API with the `openai` library. It configures the `OPENAI_API_KEY` and defines an `embed_func` function to create embeddings for given text using the `text-embedding-ada-002` model.
+SOURCE: /docs/src/embeddings/legacy.md
+
+```python
+import openai
+import os
+
+# Configuring the environment variable OPENAI_API_KEY
+if "OPENAI_API_KEY" not in os.environ:
+# OR set the key here as a variable
+openai.api_key = "sk-..."
+
+client = openai.OpenAI()
+
+def embed_func(c):
+rs = client.embeddings.create(input=c, model="text-embedding-ada-002")
+return [record.embedding for record in rs["data"]]
+```
+
+---
+TITLE: Using Embedding API with LanceDB for Vector Search
+DESCRIPTION: Demonstrates using the Embedding API in LanceDB to automatically vectorize data during ingestion and query time. It illustrates integrations with popular embedding models like OpenAI, Hugging Face, and Sentence Transformers for efficient vector search, and provides code examples in Python, Typescript, and Rust.
+SOURCE: /docs/src/basic.md
+
+```python
+--8<-- "python/python/tests/docs/test_embeddings_optional.py:imports"
+
+--8<-- "python/python/tests/docs/test_embeddings_optional.py:openai_embeddings"
+```
+
+```typescript
+--8<-- "nodejs/examples/embedding.test.ts:imports"
+--8<-- "nodejs/examples/embedding.test.ts:openai_embeddings"
+```
+
+```rust
+--8<-- "rust/lancedb/examples/openai.rs:imports"
+--8<-- "rust/lancedb/examples/openai.rs:openai_embeddings"
+```
+
+---
+TITLE: Converting LanceDB Table to Arrow Table
+DESCRIPTION: Implements the `toArrow()` method on the `Table` class to return the table as an Apache Arrow table, enabling efficient data processing and interoperability with other systems that support the Arrow format. This method is useful when you need to leverage Arrow's columnar memory layout for analytical workloads or data exchange.
+SOURCE: /docs/src/js/classes/Table.md
+
+```ts
+abstract toArrow(): Promise<Table<any>>
+```
+
+---
+TITLE: Performing Hybrid Search by Passing Vector and Text
+DESCRIPTION: Demonstrates how to perform hybrid search in LanceDB by explicitly passing both vector and text queries. This approach allows combining semantic and keyword-based search, leveraging `RRFReranker()` for result fusion, and offers flexibility in customizing reranking strategies for optimal search results.
+SOURCE: /docs/src/hybrid_search/hybrid_search.md
+
+```python
+--8<-- "python/python/tests/docs/test_search.py:hybrid_search_pass_vector_text"
+```
+
+```python
+--8<-- "python/python/tests/docs/test_search.py:hybrid_search_pass_vector_text_async"
+```
+
+---
+TITLE: Implementing Post-Filtering in VectorQuery
+DESCRIPTION: Implements post-filtering for the `VectorQuery` builder, applying filters after vector search to improve latency when pre-filtering is inefficient or scalar indices are not applicable. This can cause fewer results than the specified `limit` if the nearest results do not match the filter, and can be mitigated by adjusting the `refineFactor`.
+SOURCE: /docs/src/js/classes/VectorQuery.md
+
+```ts
+postfilter(): VectorQuery
+```
+
+---
+TITLE: Accessing Number of Deleted Rows in MergeResult
+DESCRIPTION: Exposes the `numDeletedRows` property within the `MergeResult` interface, providing access to the count of deleted rows after a merge operation. This is useful for tracking data modifications and validating the outcome of merge operations.
+SOURCE: /docs/src/js/interfaces/MergeResult.md
+
+```ts
+numDeletedRows: number;
+```
+
+---
+TITLE: Filtering Update Operations Using `where` Option
+DESCRIPTION: Filters update operations using the `where` property within `UpdateOptions`. This property defines an SQL filter expression to limit the scope of updates to rows that satisfy the specified condition, enabling selective modification of data based on criteria like `my_col == 0`.
+SOURCE: /docs/src/js/interfaces/UpdateOptions.md
+
+```ts
+where: string;
+```
+
+---
+TITLE: Managing LanceDB Vector Store Methods in LlamaIndex
+DESCRIPTION: Defines the API reference and methods for the `LanceDBVectorStore` in LlamaIndex, including parameters like `uri`, `table_name`, `vector_column_name`, and methods for creating indexes, adding nodes, deleting nodes, and querying the vector store using `VectorStoreQuery` objects. It also illustrates how to add a reranker to an existing vector store using `_add_reranker` method.
+SOURCE: /docs/src/integrations/llamaIndex.md
+
+```python
+from lancedb.rerankers import ColbertReranker
+reranker = ColbertReranker()
+vector_store._add_reranker(reranker)
+```
+
+---
+TITLE: Deleting Rows from a LanceDB Table
+DESCRIPTION: Demonstrates how to delete rows from a LanceDB table using the `delete()` method. This allows for selective removal of data based on metadata column filters, supporting SQL expressions for complex deletion predicates.
+SOURCE: /docs/src/basic.md
+
+```python
+--8<-- "python/python/tests/docs/test_basic.py:delete_rows"
+```
+
+```python
+--8<-- "python/python/tests/docs/test_basic.py:delete_rows_async"
+```
+
+```typescript
+--8<-- "nodejs/examples/basic.test.ts:delete_rows"
+```
+
+```typescript
+--8<-- "docs/src/basic_legacy.ts:delete"
+```
+
+```rust
+--8<-- "rust/lancedb/examples/simple.rs:delete"
+```
+
+---
+TITLE: Searching Vectors and Retrieving Results in LanceDB
+DESCRIPTION: Demonstrates how to perform vector search in LanceDB and retrieve the results using both synchronous and asynchronous APIs. This includes creating a LanceDB table with a nested schema and searching for nearest neighbors based on vector embeddings, showcasing a common use case in recommendation systems and AI applications.
+SOURCE: /docs/src/search.md
+
+```python
+--8<-- "python/python/tests/docs/test_search.py:import-datetime"
+--8<-- "python/python/tests/docs/test_search.py:import-lancedb"
+--8<-- "python/python/tests/docs/test_search.py:import-lancedb-pydantic"
+--8<-- "python/python/tests/docs/test_search.py:import-numpy"
+--8<-- "python/python/tests/docs/test_search.py:import-pydantic-base-model"
+--8<-- "python/python/tests/docs/test_search.py:class-definition"
+--8<-- "python/python/tests/docs/test_search.py:create_table_with_nested_schema"
+```
+
+```python
+--8<-- "python/python/tests/docs/test_search.py:import-datetime"
+--8<-- "python/python/tests/docs/test_search.py:import-lancedb"
+--8<-- "python/python/tests/docs/test_search.py:import-lancedb-pydantic"
+--8<-- "python/python/tests/docs/test_search.py:import-numpy"
+--8<-- "python/python/tests/docs/test_search.py:import-pydantic-base-model"
+--8<-- "python/python/tests/docs/test_search.py:class-definition"
+--8<-- "python/python/tests/docs/test_search.py:create_table_async_with_nested_schema"
+```
+
+---
+TITLE: Describing Table Statistics `totalBytes` Property
+DESCRIPTION: Defines the `totalBytes` property within the `TableStatistics` interface, representing the total number of bytes in the table. This property is useful for understanding the size and storage requirements of a table.
+SOURCE: /docs/src/js/interfaces/TableStatistics.md
+
+```ts
+totalBytes: number;
+```
+
+---
+TITLE: Tracking Bytes Removed During Cleanup Operations
+DESCRIPTION: Defines the `bytesRemoved` property within the `RemovalStats` interface, providing statistics about cleanup operations. It indicates the number of bytes that have been removed during a cleanup process, useful for monitoring disk space usage and efficiency.
+SOURCE: /docs/src/js/interfaces/RemovalStats.md
+
+```ts
+bytesRemoved: number;
+```
+
+---
+TITLE: Converting TakeQuery Results to Array with `toArray()`
+DESCRIPTION: Collects the results of a `TakeQuery` as an array of objects using the `toArray()` method. This method inherits from `QueryBase` and returns a `Promise` that resolves to an array of `any` type, allowing retrieval of data subsets from the table.
+SOURCE: /docs/src/js/classes/TakeQuery.md
+
+```ts
+toArray(options?): Promise<any[]>
+```
+
+---
+TITLE: Updating Records in a LanceDB Table
+DESCRIPTION: Updates existing records within a LanceDB `Table` using SQL expressions or literal values. This method allows for conditional updates based on a `where` clause, enabling efficient data modification and version control.
+SOURCE: /docs/src/js/classes/Table.md
+
+```ts
+abstract update(opts): Promise<UpdateResult>
+```
+
+```ts
+table.update({where:"x = 2", values:{"vector": [10, 10]}})
+```
+
+```ts
+abstract update(opts): Promise<UpdateResult>
+```
+
+```ts
+table.update({where:"x = 2", valuesSql:{"x": "x + 1"}})
+```
+
+```ts
+abstract update(updates, options?): Promise<UpdateResult>
+```
+
+---
+TITLE: Setting Up FiftyOne for LanceDB Integration
+DESCRIPTION: Configures the necessary prerequisites for using FiftyOne with LanceDB, including creating a virtual environment and installing the `fiftyone` package. This setup enables users to leverage LanceDB's similarity search capabilities within their FiftyOne datasets for improved data exploration and model building.
+SOURCE: /docs/src/integrations/voxel51.md
+
+```python
+python -m venv fiftyone_
+```
+
+```python
+fiftyone_/Scripts/activate
+```
+
+```python
+source fiftyone_/Scripts/activate
+```
+
+```python
+pip install fiftyone
+```
+
+---
+TITLE: Configuring LanceDB Enterprise Namespace with VPC Endpoint
+DESCRIPTION: Configures a `LanceRestNamespace` for LanceDB Enterprise deployments using a VPC endpoint. This setup uses `LanceDBRestNamespaces.builder()` to specify the API key, database location, and overrides the host to point to the VPC endpoint, enabling secure and private access to LanceDB.
+SOURCE: /java/README.md
+
+```java
+LanceRestNamespace namespace = LanceDBRestNamespaces.builder()
+.apiKey("your_lancedb_enterprise_api_key")
+.database("your-top-dir") // Your top level folder under your cloud bucket, e.g. s3://your-bucket/your-top-dir/
+.hostOverride("http://<vpc_endpoint_dns_name>:80")
+.build();
+```
+
+---
+TITLE: Adding Data to LanceDB Tables with Pydantic Models
+DESCRIPTION: Demonstrates how to add data to LanceDB tables using Pydantic models, including automatic vector conversion when using the embedding API. This allows for seamless integration of Pydantic models with LanceDB's vector search capabilities, simplifying data ingestion and management.
+SOURCE: /docs/src/guides/tables.md
+
+```python
+--8<-- "python/python/tests/docs/test_guide_tables.py:add_table_from_pydantic"
+```
+
+```python
+--8<-- "python/python/tests/docs/test_guide_tables.py:add_table_async_from_pydantic"
+```
+
+```plaintext
+=== "Async API"
+```
+
+```plaintext
+=== "Typescript[^1]"
+```
+
+---
+TITLE: Filtering LanceDB Queries with the `where()` Method
+DESCRIPTION: Implements filtering for LanceDB queries using the `where()` method. This method allows users to apply SQL-like filter statements to refine query results, enhancing data retrieval precision and enabling complex data selection based on specified conditions.
+SOURCE: /docs/src/js/classes/Query.md
+
+```ts
+where(predicate): this
+```
+
+```ts
+x > 10
+y > 0 AND y < 100
+x > 5 OR y = 'test'
+
+Filtering performance can often be improved by creating a scalar index
+on the filter column(s).
+```
+
+---
+TITLE: Creating Phrase Queries for Full-Text Search
+DESCRIPTION: Creates a new instance of the `PhraseQuery` class for performing full-text searches within a specified column. This constructor allows specifying the search phrase, the target column, and optional parameters like `slop` to control the proximity of words in the phrase.
+SOURCE: /docs/src/js/classes/PhraseQuery.md
+
+```ts
+new PhraseQuery(
+query,
+column,
+options?): PhraseQuery
+```
+
+---
+TITLE: Inserting If Not Exists with Merge Insert
+DESCRIPTION: Demonstrates how to use `merge insert` with `when_not_matched_insert_all()` to insert rows only if they do not already exist in the target table, preventing duplicate entries. This approach is useful when you want to add new data without overwriting or duplicating existing records.
+SOURCE: /docs/src/guides/tables/merge_insert.md
+
+```python
+--8<-- "python/python/tests/docs/test_merge_insert.py:insert_if_not_exists"
+```
+
+```python
+--8<-- "python/python/tests/docs/test_merge_insert.py:insert_if_not_exists_async"
+```
+
+```typescript
+--8<-- "nodejs/examples/merge_insert.test.ts:insert_if_not_exists"
+```
+
+---
+TITLE: Defining Index Type in IndexConfig Interface
+DESCRIPTION: Defines the `indexType` property within the `IndexConfig` interface. This property specifies the type of index configured on a column, enabling developers to understand the index's structure and capabilities.
+SOURCE: /docs/src/js/interfaces/IndexConfig.md
+
+```ts
+indexType: string;
+```
+
+---
+TITLE: Creating IVF_PQ Approximate Nearest Neighbor (ANN) Index
+DESCRIPTION: Demonstrates how to create an `IVF_PQ` index in LanceDB for efficient approximate nearest neighbor search. This index type is useful for quickly finding similar vectors in large datasets, trading off some accuracy for significant speed improvements compared to exhaustive search.
+SOURCE: /docs/src/ann_indexes.md
+
+```python
+--8<-- "python/python/tests/docs/test_guide_index.py:import-lancedb"
+--8<-- "python/python/tests/docs/test_guide_index.py:import-numpy"
+--8<-- "python/python/tests/docs/test_guide_index.py:create_ann_index"
+```
+
+```python
+--8<-- "python/python/tests/docs/test_guide_index.py:import-lancedb"
+--8<-- "python/python/tests/docs/test_guide_index.py:import-numpy"
+--8<-- "python/python/tests/docs/test_guide_index.py:import-lancedb-ivfpq"
+--8<-- "python/python/tests/docs/test_guide_index.py:create_ann_index_async"
+```
+
+```typescript
+--8<--- "nodejs/examples/ann_indexes.test.ts:import"
+
+--8<-- "nodejs/examples/ann_indexes.test.ts:ingest"
+```
+
+```typescript
+--8<--- "docs/src/ann_indexes.ts:import"
+
+--8<-- "docs/src/ann_indexes.ts:ingest"
+```
+
+```rust
+--8<-- "rust/lancedb/examples/ivf_pq.rs:create_index"
+```
+
+---
+TITLE: Paginating Table Names Using `startAfter` Option
+DESCRIPTION: Enables pagination of table names by using the optional `startAfter` property within the `TableNamesOptions` interface. This property allows retrieval of table names lexicographically after a specified value, useful for implementing pagination in conjunction with the `limit` option.
+SOURCE: /docs/src/js/interfaces/TableNamesOptions.md
+
+```ts
+optional startAfter: string;
+```
+
+---
+TITLE: Defining Version Property in Version Interface
+DESCRIPTION: Defines the `version` property within the `Version` interface. This property represents a numerical version identifier, useful for tracking software or data versions.
+SOURCE: /docs/src/js/interfaces/Version.md
+
+```ts
+version: number;
+```
+
+---
+TITLE: Finding Nearest Vectors Using Text with LanceDB Query
+DESCRIPTION: Implements the `nearestToText` method within the LanceDB `Query` class to perform nearest neighbor searches based on text queries. This method allows users to find vectors closest to a given text `query`, optionally specifying the `columns` to search within, enhancing semantic search capabilities.
+SOURCE: /docs/src/js/classes/Query.md
+
+```ts
+nearestToText(query, columns?): Query
+```
+
+---
+TITLE: Implementing Adaptive RAG for Query Analysis
+DESCRIPTION: Implements Adaptive RAG, a technique combining query analysis with self-corrective RAG, using a small LLM classifier to determine query complexity and adjust retrieval strategies. It defines a `RouteQuery` class for routing queries to appropriate datasources like `vectorstore` or `web_search`.
+SOURCE: /docs/src/rag/adaptive_rag.md
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain_openai import ChatOpenAI
+
+class RouteQuery(BaseModel):
+"""Route a user query to the most relevant datasource."""
+
+datasource: Literal["vectorstore", "web_search"] = Field(
+...,
+description="Given a user question choose to route it to web search or a vectorstore.",
+)
+
+# LLM with function call
+llm = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0)
+structured_llm_router = llm.with_structured_output(RouteQuery)
+```
+
+```python
+# add documents in LanceDB
+vectorstore = LanceDB.from_documents(
+documents=doc_splits,
+embedding=OpenAIEmbeddings(),
+)
+retriever = vectorstore.as_retriever()
+
+# query using defined retriever
+question = "How adaptive RAG works"
+docs = retriever.get_relevant_documents(question)
+```
+
+---
+TITLE: Configuring IVF-PQ Partitions using `numPartitions` Option
+DESCRIPTION: Configures the `numPartitions` option within the `IvfPqOptions` interface to define the number of IVF partitions for the `IVF_PQ` index, influencing search performance by balancing partition selection and intra-partition search speeds. Choosing an appropriate value, scaling with dataset size, is crucial for optimizing search efficiency.
+SOURCE: /docs/src/js/interfaces/IvfPqOptions.md
+
+```ts
+optional numPartitions: number;
+```
+
+---
+TITLE: Generating Text Embeddings with Cohere in LanceDB
+DESCRIPTION: Demonstrates how to generate text embeddings using the Cohere API within LanceDB, leveraging the `cohere` package and setting the `COHERE_API_KEY` environment variable. It illustrates creating a `TextModel` with `cohere.SourceField()` and `cohere.VectorField()` for semantic search, clustering, and classification tasks, supporting models like `embed-english-v3.0` and input types such as `search_document` and `search_query`.
+SOURCE: /docs/src/embeddings/available_embedding_models/text_embedding_functions/cohere_embedding.md
+
+```python
+import lancedb
+from lancedb.pydantic import LanceModel, Vector
+from lancedb.embeddings import EmbeddingFunctionRegistry
+
+cohere = EmbeddingFunctionRegistry
+.get_instance()
+.get("cohere")
+.create(name="embed-multilingual-v2.0")
+
+class TextModel(LanceModel):
+text: str = cohere.SourceField()
+vector: Vector(cohere.ndims()) =  cohere.VectorField()
+
+data = [ { "text": "hello world" },
+{ "text": "goodbye world" }]
+
+db = lancedb.connect("~/.lancedb")
+tbl = db.create_table("test", schema=TextModel, mode="overwrite")
+
+tbl.add(data)
+```
+
+---
+TITLE: Describing Table `numIndices` Property in TableStatistics
+DESCRIPTION: Defines the `numIndices` property within the `TableStatistics` interface, representing the number of indices in a table. This property is useful for understanding table structure and optimizing query performance.
+SOURCE: /docs/src/js/interfaces/TableStatistics.md
+
+```ts
+numIndices: number;
+```
+
+---
+TITLE: Using MergeInsert in LanceDB Table
+DESCRIPTION: Implements the `mergeInsert` method within a LanceDB `Table` to provide a builder for merge insert operations. This method allows for efficient updating or inserting of records based on specified `on` keys, returning a `MergeInsertBuilder` for further configuration.
+SOURCE: /docs/src/js/classes/Table.md
+
+```ts
+abstract mergeInsert(on): MergeInsertBuilder
+```
+
+---
+TITLE: Configuring String Dictionary Encoding in MakeArrowTableOptions
+DESCRIPTION: Configures the `dictionaryEncodeStrings` property within `MakeArrowTableOptions` to enable dictionary encoding for string columns. This optimizes storage and performance when string columns contain many repeated values, but is ignored if a `schema` is provided for more precise column type control.
+SOURCE: /docs/src/js/classes/MakeArrowTableOptions.md
+
+```ts
+dictionaryEncodeStrings: boolean = false;
+```
+
+---
+TITLE: Deleting Records from a LanceDB Table
+DESCRIPTION: Implements the `delete` method on the `Table` class to remove rows from a LanceDB table based on a provided predicate. This method returns a `Promise` that resolves to a `DeleteResult` object, indicating the new version number of the table after the deletion operation.
+SOURCE: /docs/src/js/classes/Table.md
+
+```ts
+abstract delete(predicate): Promise<DeleteResult>
+```
+
+---
+TITLE: Configuring Write Operation Timeout using `timeoutMs`
+DESCRIPTION: Configures the `timeoutMs` property within `WriteExecutionOptions` to set a maximum execution time for write operations, enforcing a timeout on all attempts, including the first, to prevent indefinite retries. This ensures that write operations are cancelled after the specified duration, improving reliability and preventing resource exhaustion.
+SOURCE: /docs/src/js/interfaces/WriteExecutionOptions.md
+
+```ts
+optional timeoutMs: number;
+```
+
+---
+TITLE: Configuring `numSubVectors` in `IvfPqOptions` for IVF_PQ
+DESCRIPTION: Defines the `numSubVectors` property within the `IvfPqOptions` interface, controlling the compression level of vectors during quantization in the `IVF_PQ` index. A higher number of sub-vectors results in less compression, with preferred values allowing efficient SIMD instructions when the vector dimension is divisible by 8 or 16.
+SOURCE: /docs/src/js/interfaces/IvfPqOptions.md
+
+```ts
+optional numSubVectors: number;
+```
+
+---
+TITLE: Configuring `numBits` in `IvfPqOptions` for IVF_PQ Index
+DESCRIPTION: Configures the `numBits` property within the `IvfPqOptions` interface, used for creating an `IVF_PQ` index. This setting determines the compression level of sub-vectors, impacting the index's accuracy and search speed; higher bit values increase accuracy but reduce speed.
+SOURCE: /docs/src/js/interfaces/IvfPqOptions.md
+
+```ts
+optional numBits: number;
+```
+
+---
+TITLE: Accessing Updated Row Count in MergeResult
+DESCRIPTION: Defines the `numUpdatedRows` property within the `MergeResult` interface. This property provides the number of rows updated during a merge operation, allowing developers to track data modifications.
+SOURCE: /docs/src/js/interfaces/MergeResult.md
+
+```ts
+numUpdatedRows: number;
+```
+
+---
+TITLE: Setting Secrets Using Variables in LanceDB
+DESCRIPTION: Demonstrates how to set sensitive configuration like API keys using variables on the embedding registry in LanceDB, instead of hardcoding them. This approach prevents storing secrets in metadata and allows runtime configuration, enhancing security and flexibility.
+SOURCE: /docs/src/embeddings/variables_and_secrets.md
+
+```python
+--8<-- "python/python/tests/docs/test_embeddings_optional.py:register_secret"
+```
+
+```typescript
+--8<-- "nodejs/examples/embedding.test.ts:register_secret"
+```
+
+---
+TITLE: Implementing Corrective RAG (CRAG) with LanceDB
+DESCRIPTION: Demonstrates Corrective Retrieval-Augmented Generation (CRAG) implementation using `LanceDB`, which includes relevance checking, knowledge refinement, and web search augmentation. This approach enhances RAG by filtering irrelevant documents and seeking additional information when needed, improving the accuracy and reliability of generated responses.
+SOURCE: /docs/src/rag/corrective_rag.md
+
+```python
+import pandas as pd
+import lancedb
+from lancedb.pydantic import LanceModel, Vector
+from lancedb.embeddings import get_registry
+
+db = lancedb.connect("/tmp/db")
+model = get_registry().get("sentence-transformers").create(name="BAAI/bge-small-en-v1.5", device="cpu")
+
+class Docs(LanceModel):
+text: str = model.SourceField()
+vector: Vector(model.ndims()) = model.VectorField()
+
+table = db.create_table("docs", schema=Docs)
+
+# considering chunks are in list format
+df = pd.DataFrame({'text':chunks})
+table.add(data=df)
+
+# as per document feeded
+query = "How Transformers work?"
+actual = table.search(query).limit(1).to_list()[0]
+print(actual.text)
+```
