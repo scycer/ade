@@ -1,10 +1,13 @@
-import { BrainDependencies, DbQueryFilter } from "../types";
+import type { BrainDependencies } from "../types";
+import { QueryNodesSchema, QueryNodesOutputSchema } from "../types";
 
 export async function queryNodes(
-  payload: { filter?: DbQueryFilter; limit?: number },
+  payload: unknown,
   deps: BrainDependencies
 ) {
-  const { filter = {}, limit = 50 } = payload;
+  // Validate input payload
+  const validatedInput = QueryNodesSchema.shape.payload.parse(payload);
+  const { filter = {}, limit = 50 } = validatedInput;
 
   // Query nodes with filter
   let nodes = await deps.db.queryNodes(filter);
@@ -14,7 +17,7 @@ export async function queryNodes(
     nodes = nodes.slice(0, limit);
   }
 
-  return {
+  const output = {
     nodes: nodes.map(node => ({
       id: node.id,
       type: node.type,
@@ -23,4 +26,7 @@ export async function queryNodes(
     })),
     count: nodes.length,
   };
+
+  // Validate output before returning
+  return QueryNodesOutputSchema.parse(output);
 }

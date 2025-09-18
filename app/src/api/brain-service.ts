@@ -1,7 +1,7 @@
 import { brain } from "../core/brain";
 import { LanceDBAdapter } from "../db/lancedb-adapter";
 import { LLMStub } from "../db/llm-stub";
-import { BrainDependencies } from "../core/types";
+import type { BrainDependencies } from "../core/types";
 
 // Initialize dependencies
 const dbAdapter = new LanceDBAdapter();

@@ -3,6 +3,12 @@
   "workspaces": {
     "": {
       "name": "ade",
+      "devDependencies": {
+        "@types/bun": "latest",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
     },
     "app": {
       "name": "bun-react-template",

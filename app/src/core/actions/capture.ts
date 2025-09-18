@@ -1,10 +1,13 @@
-import { BrainDependencies } from "../types";
+import type { BrainDependencies } from "../types";
+import { CaptureThoughtSchema, CaptureThoughtOutputSchema } from "../types";
 
 export async function captureThought(
-  payload: { text: string; tags?: string[] },
+  payload: unknown,
   deps: BrainDependencies
 ) {
-  const { text, tags = [] } = payload;
+  // Validate input payload
+  const validatedInput = CaptureThoughtSchema.shape.payload.parse(payload);
+  const { text, tags = [] } = validatedInput;
 
   // Generate embedding for the text
   const embedding = await deps.llm.generateEmbedding(text);
@@ -37,11 +40,16 @@ export async function captureThought(
     }
 
     // Create edge from thought to tag
-    await deps.db.createEdge(node.id, tagNode.id, "tagged");
+    if (tagNode) {
+      await deps.db.createEdge(node.id, tagNode.id, "tagged");
+    }
   }
 
-  return {
+  const output = {
     node_id: node.id,
     message: `Captured thought with ${tags.length} tags`,
   };
+
+  // Validate output before returning
+  return CaptureThoughtOutputSchema.parse(output);
 }

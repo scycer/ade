@@ -1,49 +1,58 @@
 import { z } from "zod";
 
-// Database Node Types
-export interface DbNode {
-  id: string;
-  type: string;
-  content: string;
-  metadata?: Record<string, any>;
-  embedding?: number[];
-  created_at: Date;
-  updated_at: Date;
-}
+// Database Node Schemas
+export const DbNodeSchema = z.object({
+  id: z.string().uuid(),
+  type: z.string(),
+  content: z.string(),
+  metadata: z.record(z.any()).optional(),
+  embedding: z.array(z.number()).optional(),
+  created_at: z.date(),
+  updated_at: z.date(),
+});
 
-export interface DbNodeInput {
-  type: string;
-  content: string;
-  metadata?: Record<string, any>;
-  embedding?: number[];
-}
+export const DbNodeInputSchema = z.object({
+  type: z.string(),
+  content: z.string(),
+  metadata: z.record(z.any()).optional(),
+  embedding: z.array(z.number()).optional(),
+});
 
-export interface DbNodeUpdate {
-  content?: string;
-  metadata?: Record<string, any>;
-  embedding?: number[];
-}
+export const DbNodeUpdateSchema = z.object({
+  content: z.string().optional(),
+  metadata: z.record(z.any()).optional(),
+  embedding: z.array(z.number()).optional(),
+});
 
-export interface DbEdge {
-  from_id: string;
-  to_id: string;
-  type: string;
-  metadata?: Record<string, any>;
-  created_at: Date;
-}
+export const DbEdgeSchema = z.object({
+  id: z.string().uuid(),
+  from_id: z.string().uuid(),
+  to_id: z.string().uuid(),
+  type: z.string(),
+  metadata: z.record(z.any()).optional(),
+  created_at: z.date(),
+});
 
-export interface DbQueryFilter {
-  type?: string;
-  [key: string]: any;
-}
+export const DbQueryFilterSchema = z.object({
+  type: z.string().optional(),
+  content: z.string().optional(),
+}).catchall(z.any());
 
 // AI Types
-export interface AiSuggestion {
-  suggestion: string;
-  confidence: number;
-}
+export const AiSuggestionSchema = z.object({
+  suggestion: z.string(),
+  confidence: z.number().min(0).max(1),
+});
 
-// Brain Dependencies
+// Export TypeScript types inferred from Zod schemas
+export type DbNode = z.infer<typeof DbNodeSchema>;
+export type DbNodeInput = z.infer<typeof DbNodeInputSchema>;
+export type DbNodeUpdate = z.infer<typeof DbNodeUpdateSchema>;
+export type DbEdge = z.infer<typeof DbEdgeSchema>;
+export type DbQueryFilter = z.infer<typeof DbQueryFilterSchema>;
+export type AiSuggestion = z.infer<typeof AiSuggestionSchema>;
+
+// Brain Dependencies Interface (not using Zod for function types due to TypeScript limitations)
 export interface BrainDependencies {
   db: {
     createNode: (data: DbNodeInput) => Promise<DbNode>;
@@ -80,15 +89,15 @@ export const QueryNodesSchema = z.object({
   type: z.literal("query_nodes"),
   payload: z.object({
     filter: z.record(z.any()).optional(),
-    limit: z.number().optional(),
+    limit: z.number().positive().optional(),
   }),
 });
 
 export const VectorSearchSchema = z.object({
   type: z.literal("vector_search"),
   payload: z.object({
-    query: z.string(),
-    limit: z.number().optional().default(10),
+    query: z.string().min(1),
+    limit: z.number().positive().optional().default(10),
   }),
 });
 
@@ -105,31 +114,31 @@ export type Action = z.infer<typeof ActionSchema>;
 // Output Schemas
 export const HelloOutputSchema = z.object({
   message: z.string(),
-  node_id: z.string(),
+  node_id: z.string().uuid(),
 });
 
 export const CaptureThoughtOutputSchema = z.object({
-  node_id: z.string(),
+  node_id: z.string().uuid(),
   message: z.string(),
 });
 
 export const QueryNodesOutputSchema = z.object({
   nodes: z.array(z.object({
-    id: z.string(),
+    id: z.string().uuid(),
     type: z.string(),
     content: z.string(),
     created_at: z.date(),
   })),
-  count: z.number(),
+  count: z.number().nonnegative(),
 });
 
 export const VectorSearchOutputSchema = z.object({
   results: z.array(z.object({
-    id: z.string(),
+    id: z.string().uuid(),
     content: z.string(),
     score: z.number().optional(),
   })),
-  count: z.number(),
+  count: z.number().nonnegative(),
 });
 
 export type ActionOutput =

@@ -1,10 +1,14 @@
-import { BrainDependencies } from "../types";
+import type { BrainDependencies } from "../types";
+import { HelloActionSchema, HelloOutputSchema } from "../types";
 
 export async function helloAction(
-  payload: { name?: string },
+  payload: unknown,
   deps: BrainDependencies
 ) {
-  const name = payload.name || "Brain";
+  // Validate input payload
+  const validatedInput = HelloActionSchema.shape.payload.parse(payload);
+
+  const name = validatedInput.name || "Brain";
   const message = `Hello from ${name} Architecture!`;
 
   // Create a hello node
@@ -17,8 +21,11 @@ export async function helloAction(
     },
   });
 
-  return {
+  const output = {
     message,
     node_id: node.id,
   };
+
+  // Validate output before returning
+  return HelloOutputSchema.parse(output);
 }

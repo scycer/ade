@@ -1,14 +1,12 @@
 import { z } from "zod";
 import {
   ActionSchema,
-  Action,
-  ActionOutput,
-  BrainDependencies,
   HelloOutputSchema,
   CaptureThoughtOutputSchema,
   QueryNodesOutputSchema,
   VectorSearchOutputSchema,
 } from "./types";
+import type { Action, ActionOutput, BrainDependencies } from "./types";
 import { helloAction } from "./actions/hello";
 import { captureThought } from "./actions/capture";
 import { queryNodes } from "./actions/query";

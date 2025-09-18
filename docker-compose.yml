@@ -8,13 +8,7 @@ services:
       - "${PORT:-6969}:6969"
     volumes:
       # Mount ADE
-      - ./app:/app
-
-      # Mount Data
-      - ./data:/data
-
-      # Mount Projects
-      - ./projects:/projects
+      - ./:/app
     env_file:
       - .env
     restart: unless-stopped

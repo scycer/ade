@@ -9,9 +9,17 @@
     "build": "bun run --cwd app build",
     "test": "bun run --cwd app test",
     "validate": "bun run --cwd app validate",
-    "rebuild": "bunx ./tools/rebuild-container.ts",
+    "rebuild": "bun ./tools/rebuild-container.ts",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f"
+  },
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

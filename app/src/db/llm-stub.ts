@@ -1,6 +1,6 @@
-import { BrainDependencies, AiSuggestion } from "../core/types";
+import type { BrainDependencies, AiSuggestion } from "../core/types";
 
-export class LLMStub implements BrainDependencies["llm"] {
+export class LLMStub {
   async generateSuggestion(content: string, hint?: string): Promise<AiSuggestion | null> {
     // Stub implementation - returns a simple suggestion
     const suggestion = hint

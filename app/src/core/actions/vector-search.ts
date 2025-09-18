@@ -1,10 +1,13 @@
-import { BrainDependencies } from "../types";
+import type { BrainDependencies } from "../types";
+import { VectorSearchSchema, VectorSearchOutputSchema } from "../types";
 
 export async function vectorSearch(
-  payload: { query: string; limit?: number },
+  payload: unknown,
   deps: BrainDependencies
 ) {
-  const { query, limit = 10 } = payload;
+  // Validate input payload
+  const validatedInput = VectorSearchSchema.shape.payload.parse(payload);
+  const { query, limit = 10 } = validatedInput;
 
   // Generate embedding for the query
   const queryEmbedding = await deps.llm.generateEmbedding(query);
@@ -12,7 +15,7 @@ export async function vectorSearch(
   // Perform vector search
   const nodes = await deps.db.queryNodesByVector(queryEmbedding, limit);
 
-  return {
+  const output = {
     results: nodes.map(node => ({
       id: node.id,
       content: node.content,
@@ -21,4 +24,7 @@ export async function vectorSearch(
     })),
     count: nodes.length,
   };
+
+  // Validate output before returning
+  return VectorSearchOutputSchema.parse(output);
 }
