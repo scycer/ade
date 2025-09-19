@@ -1,0 +1,14 @@
+{
+  "name": "claude-sdk-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "bun run test-query.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-code": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}
