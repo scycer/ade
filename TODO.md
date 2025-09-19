@@ -1,5 +1,4 @@
 # FOCUS
-- Basic bun app with UI
 
 # TODO
 - List out projects

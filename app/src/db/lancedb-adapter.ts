@@ -94,15 +94,15 @@ export class LanceDBAdapter {
 
     await this.nodesTable.add([node]);
 
-    // Return with Date objects and parsed metadata
+    // Return with parsed metadata and strings for dates
     const result = {
       id: node.id,
       type: node.type,
       content: node.content,
       metadata: JSON.parse(node.metadata_json),
       embedding: node.embedding,
-      created_at: new Date(node.created_at),
-      updated_at: new Date(node.updated_at),
+      created_at: node.created_at,
+      updated_at: node.updated_at,
     };
 
     return DbNodeSchema.parse(result);
@@ -163,8 +163,8 @@ export class LanceDBAdapter {
       content: updatedNode.content,
       metadata: JSON.parse(updatedNode.metadata_json),
       embedding: updatedNode.embedding,
-      created_at: new Date(updatedNode.created_at),
-      updated_at: new Date(updatedNode.updated_at),
+      created_at: updatedNode.created_at,
+      updated_at: updatedNode.updated_at,
     };
 
     return DbNodeSchema.parse(result);
@@ -196,8 +196,8 @@ export class LanceDBAdapter {
       content: node.content,
       metadata: node.metadata_json ? JSON.parse(node.metadata_json) : {},
       embedding: embedding,
-      created_at: new Date(node.created_at),
-      updated_at: new Date(node.updated_at),
+      created_at: node.created_at,
+      updated_at: node.updated_at,
     };
 
     return DbNodeSchema.parse(result);
@@ -245,8 +245,8 @@ export class LanceDBAdapter {
         content: node.content,
         metadata: node.metadata_json ? JSON.parse(node.metadata_json) : {},
         embedding: embedding,
-        created_at: new Date(node.created_at),
-        updated_at: new Date(node.updated_at),
+        created_at: node.created_at,
+        updated_at: node.updated_at,
       };
       return DbNodeSchema.parse(result);
     });
@@ -286,8 +286,8 @@ export class LanceDBAdapter {
         content: node.content,
         metadata: node.metadata_json ? JSON.parse(node.metadata_json) : {},
         embedding: embedding,
-        created_at: new Date(node.created_at),
-        updated_at: new Date(node.updated_at),
+        created_at: node.created_at,
+        updated_at: node.updated_at,
       };
       return DbNodeSchema.parse(result);
     });
@@ -314,7 +314,7 @@ export class LanceDBAdapter {
       to_id: edge.to_id,
       type: edge.type,
       metadata: {},
-      created_at: new Date(edge.created_at),
+      created_at: edge.created_at,
     };
     DbEdgeSchema.parse(edgeWithDate);
 

@@ -1,5 +1,6 @@
 import {
   Home,
+  GitBranch,
 } from "lucide-react";
 import { createContext, useContext, useState } from "react";
 import {
@@ -44,6 +45,11 @@ const data = {
       title: "Home",
       url: "/home",
       icon: Home,
+    },
+    {
+      title: "Git Diff",
+      url: "/git-diff",
+      icon: GitBranch,
     },
   ],
 };

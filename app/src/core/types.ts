@@ -5,22 +5,22 @@ export const DbNodeSchema = z.object({
   id: z.string().uuid(),
   type: z.string(),
   content: z.string(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   embedding: z.array(z.number()).optional(),
-  created_at: z.date(),
-  updated_at: z.date(),
+  created_at: z.string(),
+  updated_at: z.string(),
 });
 
 export const DbNodeInputSchema = z.object({
   type: z.string(),
   content: z.string(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   embedding: z.array(z.number()).optional(),
 });
 
 export const DbNodeUpdateSchema = z.object({
   content: z.string().optional(),
-  metadata: z.record(z.any()).optional(),
+  metadata: z.record(z.string(), z.any()).optional(),
   embedding: z.array(z.number()).optional(),
 });
 
@@ -29,8 +29,8 @@ export const DbEdgeSchema = z.object({
   from_id: z.string().uuid(),
   to_id: z.string().uuid(),
   type: z.string(),
-  metadata: z.record(z.any()).optional(),
-  created_at: z.date(),
+  metadata: z.record(z.string(), z.any()).optional(),
+  created_at: z.string(),
 });
 
 export const DbQueryFilterSchema = z.object({
@@ -88,7 +88,7 @@ export const CaptureThoughtSchema = z.object({
 export const QueryNodesSchema = z.object({
   type: z.literal("query_nodes"),
   payload: z.object({
-    filter: z.record(z.any()).optional(),
+    filter: z.record(z.string(), z.any()).optional(),
     limit: z.number().positive().optional(),
   }),
 });
@@ -101,12 +101,18 @@ export const VectorSearchSchema = z.object({
   }),
 });
 
+export const GitDiffActionSchema = z.object({
+  type: z.literal("git_diff"),
+  payload: z.object({}),
+});
+
 // Union of all actions
 export const ActionSchema = z.discriminatedUnion("type", [
   HelloActionSchema,
   CaptureThoughtSchema,
   QueryNodesSchema,
   VectorSearchSchema,
+  GitDiffActionSchema,
 ]);
 
 export type Action = z.infer<typeof ActionSchema>;
@@ -127,7 +133,7 @@ export const QueryNodesOutputSchema = z.object({
     id: z.string().uuid(),
     type: z.string(),
     content: z.string(),
-    created_at: z.date(),
+    created_at: z.string(),
   })),
   count: z.number().nonnegative(),
 });
@@ -141,8 +147,22 @@ export const VectorSearchOutputSchema = z.object({
   count: z.number().nonnegative(),
 });
 
+export const GitDiffOutputSchema = z.object({
+  files: z.array(z.object({
+    filename: z.string(),
+    status: z.enum(['added', 'modified', 'deleted']),
+    additions: z.number(),
+    deletions: z.number(),
+    patch: z.string(),
+  })),
+  totalFiles: z.number(),
+  totalAdditions: z.number(),
+  totalDeletions: z.number(),
+});
+
 export type ActionOutput =
   | z.infer<typeof HelloOutputSchema>
   | z.infer<typeof CaptureThoughtOutputSchema>
   | z.infer<typeof QueryNodesOutputSchema>
-  | z.infer<typeof VectorSearchOutputSchema>;
+  | z.infer<typeof VectorSearchOutputSchema>
+  | z.infer<typeof GitDiffOutputSchema>;

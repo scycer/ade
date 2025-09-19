@@ -5,12 +5,14 @@ import {
   CaptureThoughtOutputSchema,
   QueryNodesOutputSchema,
   VectorSearchOutputSchema,
+  GitDiffOutputSchema,
 } from "./types";
 import type { Action, ActionOutput, BrainDependencies } from "./types";
 import { helloAction } from "./actions/hello";
 import { captureThought } from "./actions/capture";
 import { queryNodes } from "./actions/query";
 import { vectorSearch } from "./actions/vector-search";
+import { getGitDiffs } from "./actions/git-diff";
 
 export async function brain(
   action: unknown,
@@ -66,6 +68,12 @@ export async function brain(
       case "vector_search": {
         const result = await vectorSearch(validatedAction.payload, deps);
         output = VectorSearchOutputSchema.parse(result);
+        break;
+      }
+
+      case "git_diff": {
+        const result = await getGitDiffs(validatedAction.payload);
+        output = GitDiffOutputSchema.parse(result);
         break;
       }
 

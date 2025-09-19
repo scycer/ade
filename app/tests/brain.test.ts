@@ -249,7 +249,7 @@ describe("Brain Actions", () => {
         expect(node).toHaveProperty('type');
         expect(node).toHaveProperty('content');
         expect(node).toHaveProperty('created_at');
-        expect(node.created_at).toBeInstanceOf(Date);
+        expect(typeof node.created_at).toBe('string');
       }
     });
   });

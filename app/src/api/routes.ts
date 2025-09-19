@@ -34,4 +34,20 @@ export const routes = {
       );
     }
   },
+
+  "/api/git/diff": async () => {
+    try {
+      const result = await handleBrainRequest({
+        type: "git_diff",
+        payload: {},
+      });
+      return Response.json(result);
+    } catch (error) {
+      console.error("Git diff error:", error);
+      return Response.json(
+        { error: error instanceof Error ? error.message : "Unknown error" },
+        { status: 500 }
+      );
+    }
+  },
 };

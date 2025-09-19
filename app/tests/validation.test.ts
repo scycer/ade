@@ -28,8 +28,8 @@ describe("Zod Schema Validation", () => {
           content: "Test content",
           metadata: { key: "value" },
           embedding: [0.1, 0.2, 0.3],
-          created_at: new Date(),
-          updated_at: new Date(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         };
 
         const result = DbNodeSchema.safeParse(validNode);
@@ -44,8 +44,8 @@ describe("Zod Schema Validation", () => {
           id: "not-a-uuid",
           type: "thought",
           content: "Test content",
-          created_at: new Date(),
-          updated_at: new Date(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         };
 
         const result = DbNodeSchema.safeParse(invalidNode);
@@ -57,8 +57,8 @@ describe("Zod Schema Validation", () => {
           id: "550e8400-e29b-41d4-a716-446655440000",
           type: "thought",
           content: "Test content",
-          created_at: new Date(),
-          updated_at: new Date(),
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         };
 
         const result = DbNodeSchema.safeParse(minimalNode);
@@ -115,7 +115,7 @@ describe("Zod Schema Validation", () => {
           to_id: "550e8400-e29b-41d4-a716-446655440002",
           type: "related",
           metadata: { weight: 0.8 },
-          created_at: new Date(),
+          created_at: new Date().toISOString(),
         };
 
         const result = DbEdgeSchema.safeParse(validEdge);
@@ -128,7 +128,7 @@ describe("Zod Schema Validation", () => {
           from_id: "not-a-uuid",
           to_id: "550e8400-e29b-41d4-a716-446655440002",
           type: "related",
-          created_at: new Date(),
+          created_at: new Date().toISOString(),
         };
 
         const result = DbEdgeSchema.safeParse(invalidEdge);
@@ -339,7 +339,7 @@ describe("Zod Schema Validation", () => {
               id: "550e8400-e29b-41d4-a716-446655440000",
               type: "thought",
               content: "Test content",
-              created_at: new Date(),
+              created_at: new Date().toISOString(),
             },
           ],
           count: 1,
@@ -460,7 +460,7 @@ describe("Zod Schema Validation", () => {
         type: 123, // should be string
         content: null, // should be string
         created_at: "not-a-date", // should be Date
-        updated_at: new Date(),
+        updated_at: new Date().toISOString(),
       };
 
       const result = DbNodeSchema.safeParse(invalidNode);
