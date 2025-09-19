@@ -1,9 +1,13 @@
 {
   "name": "ade",
+  "module": "index.ts",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
   "private": true,
-  "workspaces": [
-    "app"
-  ],
   "scripts": {
     "dev": "bun run --cwd app dev",
     "build": "bun run --cwd app build",
@@ -14,12 +18,8 @@
     "docker:down": "docker compose down",
     "docker:logs": "docker compose logs -f"
   },
-  "module": "index.ts",
   "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+  "workspaces": [
+    "app"
+  ]
 }

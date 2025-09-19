@@ -1,0 +1,1089 @@
+---
+LIBRARY: shadcn-ui/ui
+SOURCE_ROOT: https://github.com/shadcn-ui/ui/blob/main
+UPDATED_AT: September 6, 2025 at 4:24 AM UTC
+---
+
+================================
+CODE SNIPPETS
+================================
+
+TITLE: Using Command Palette with React Components
+DESCRIPTION: Demonstrates the usage of the `Command` component and its related sub-components like `CommandInput`, `CommandList`, `CommandItem`, and `CommandDialog` to create a functional command palette in a React application. This pattern provides a user-friendly interface for executing commands or searching through options, enhancing the overall user experience.
+SOURCE: /apps/v4/content/docs/components/command.mdx
+
+```tsx
+import {
+Command,
+CommandDialog,
+CommandEmpty,
+CommandGroup,
+CommandInput,
+CommandItem,
+CommandList,
+CommandSeparator,
+CommandShortcut,
+} from "@/components/ui/command"
+```
+
+```tsx
+<Command>
+<CommandInput placeholder="Type a command or search..." />
+<CommandList>
+<CommandEmpty>No results found.</CommandEmpty>
+<CommandGroup heading="Suggestions">
+<CommandItem>Calendar</CommandItem>
+<CommandItem>Search Emoji</CommandItem>
+<CommandItem>Calculator</CommandItem>
+</CommandGroup>
+<CommandSeparator />
+<CommandGroup heading="Settings">
+<CommandItem>Profile</CommandItem>
+<CommandItem>Billing</CommandItem>
+<CommandItem>Settings</CommandItem>
+</CommandGroup>
+</CommandList>
+</Command>
+```
+
+---
+TITLE: Installing the Separator Component with CLI or Manual
+DESCRIPTION: Demonstrates how to install the `Separator` component using either the CLI with `npx shadcn@latest add separator` or manually by installing the `@radix-ui/react-separator` dependency and copying the component source code; this allows developers to add visually distinct dividers to their user interfaces.
+SOURCE: /apps/v4/content/docs/components/separator.mdx
+
+```bash
+npx shadcn@latest add separator
+```
+
+```bash
+npm install @radix-ui/react-separator
+```
+
+---
+TITLE: Controlling Sidebar Visibility Using `open` and `onOpenChange`
+DESCRIPTION: Demonstrates controlling the sidebar's visibility using the `open` and `onOpenChange` props within the `SidebarProvider`. This approach allows external components to manage the sidebar's state, providing more flexibility and integration options.
+SOURCE: /apps/v4/content/docs/components/sidebar.mdx
+
+```tsx
+export function AppSidebar() {
+const [open, setOpen] = React.useState(false)
+
+return (
+<SidebarProvider open={open} onOpenChange={setOpen}>
+<Sidebar />
+</SidebarProvider>
+)
+}
+```
+
+---
+TITLE: Installing Label Component with CLI or Manually
+DESCRIPTION: Demonstrates how to install the `Label` component using either the CLI with `npx shadcn@latest add label` or manually by installing the `@radix-ui/react-label` dependency and copying the component source code. This allows developers to integrate the `Label` component into their projects for accessible form labeling.
+SOURCE: /apps/v4/content/docs/components/label.mdx
+
+```bash
+npx shadcn@latest add label
+```
+
+```bash
+npm install @radix-ui/react-label
+```
+
+---
+TITLE: Defining `$schema` Property in `registry.json`
+DESCRIPTION: Defines the `$schema` property within the `registry.json` file, specifying the JSON schema used for validation. This ensures the `registry.json` file adheres to a predefined structure, enabling tooling and validation against the schema located at `https://ui.shadcn.com/schema/registry.json`.
+SOURCE: /apps/www/content/docs/registry/registry-json.mdx
+
+```json
+{
+"$schema": "https://ui.shadcn.com/schema/registry.json"
+}
+```
+
+---
+TITLE: Implementing Alert Dialogs with Radix UI Components
+DESCRIPTION: Demonstrates the usage of the `AlertDialog` component from `@/components/ui/alert-dialog` to create a modal dialog for critical actions. It illustrates how to structure the dialog with `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogHeader`, `AlertDialogTitle`, `AlertDialogDescription`, `AlertDialogFooter`, `AlertDialogCancel`, and `AlertDialogAction` for a complete alert dialog implementation.
+SOURCE: /apps/www/content/docs/components/alert-dialog.mdx
+
+```tsx
+import {
+AlertDialog,
+AlertDialogAction,
+AlertDialogCancel,
+AlertDialogContent,
+AlertDialogDescription,
+AlertDialogFooter,
+AlertDialogHeader,
+AlertDialogTitle,
+AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+```
+
+```tsx
+<AlertDialog>
+<AlertDialogTrigger>Open</AlertDialogTrigger>
+<AlertDialogContent>
+<AlertDialogHeader>
+<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+<AlertDialogDescription>
+This action cannot be undone. This will permanently delete your account
+and remove your data from our servers.
+</AlertDialogDescription>
+</AlertDialogHeader>
+<AlertDialogFooter>
+<AlertDialogCancel>Cancel</AlertDialogCancel>
+<AlertDialogAction>Continue</AlertDialogAction>
+</AlertDialogFooter>
+</AlertDialogContent>
+</AlertDialog>
+```
+
+---
+TITLE: Installing Radio Group Component with CLI or Manual
+DESCRIPTION: Demonstrates installing the `radio-group` component using either the CLI with `npx shadcn@latest add radio-group` or manually by installing the `@radix-ui/react-radio-group` dependency and copying the component source code, then updating import paths to match the project setup. This allows developers to integrate a styled radio group into their projects.
+SOURCE: /apps/www/content/docs/components/radio-group.mdx
+
+```bash
+npx shadcn@latest add radio-group
+```
+
+```bash
+npm install @radix-ui/react-radio-group
+```
+
+---
+TITLE: Implementing Collapsible Sidebar Component in React
+DESCRIPTION: Implements a main `Sidebar` component for rendering a collapsible sidebar in a React application. Demonstrates the usage of the `Sidebar` component from the `@/components/ui/sidebar` module, providing a reusable UI element for navigation and content organization.
+SOURCE: /apps/v4/content/docs/components/sidebar.mdx
+
+```tsx
+import { Sidebar } from "@/components/ui/sidebar"
+
+export function AppSidebar() {
+return <Sidebar />
+}
+```
+
+---
+TITLE: Installing Checkbox Component with Shadcn UI
+DESCRIPTION: Demonstrates how to install the `Checkbox` component using either the CLI (`npx shadcn@latest add checkbox`) or manually by installing the `@radix-ui/react-checkbox` dependency and copying the component source code. This allows developers to integrate a styled checkbox component into their Shadcn UI project.
+SOURCE: /apps/www/content/docs/components/checkbox.mdx
+
+```bash
+npx shadcn@latest add checkbox
+```
+
+```bash
+npm install @radix-ui/react-checkbox
+```
+
+---
+TITLE: Adding a Registry to the Component Index
+DESCRIPTION: Demonstrates how to add a new registry to the `registries.json` file, allowing components from that registry to be used within the application. This enables the use of custom or third-party component libraries by extending the available component options.
+SOURCE: /apps/v4/content/docs/registry/registry-index.mdx
+
+```json
+{
+"@acme": "https://registry.acme.com/r/{name}.json",
+"@example": "https://example.com/r/{name}"
+}
+```
+
+---
+TITLE: Adding a Registry: Requirements for Valid JSON
+DESCRIPTION: Defines the requirements for adding a registry, including being open source, publicly accessible, and a valid JSON file conforming to the `registry schema specification`. It specifies that the registry should be a flat structure and the `files` array must not include a `content` property.
+SOURCE: /apps/v4/content/docs/registry/registry-index.mdx
+
+```json
+{
+"$schema": "https://ui.shadcn.com/schema/registry.json",
+"name": "acme",
+"homepage": "https://acme.com",
+"items": [
+{
+"name": "login-form",
+"type": "registry:component",
+"title": "Login Form",
+"description": "A login form component.",
+"files": [
+{
+"path": "registry/new-york/auth/login-form.tsx",
+"type": "registry:component"
+}
+]
+},
+{
+"name": "example-login-form",
+"type": "registry:component",
+"title": "Example Login Form",
+"description": "An example showing how to use the login form component.",
+"files": [
+{
+"path": "registry/new-york/examples/example-login-form.tsx",
+"type": "registry:component"
+}
+]
+}
+}
+]
+}
+```
+
+---
+TITLE: Resolving Dependency Order in Registry Packages
+DESCRIPTION: Illustrates the dependency resolution order when installing registry packages like `@custom/dashboard` with `registryDependencies`. It shows how dependencies are installed and potentially overwritten based on their order in the `dashboard.json` file, ensuring that later dependencies take precedence.
+SOURCE: /apps/v4/content/docs/registry/namespace.mdx
+
+```json
+{
+"name": "dashboard",
+"registryDependencies": [
+"@shadcn/card", // 1. Resolved first
+"@vendor/chart", // 2. Resolved second
+"@custom/card" // 3. Resolved last (overrides @shadcn/card)
+]
+}
+```
+
+---
+TITLE: Creating a New Remix Project with `create-remix`
+DESCRIPTION: Demonstrates how to create a new Remix project using the `create-remix` command. This is the first step in setting up a Remix application and provides a foundation for building web applications with Remix.
+SOURCE: /apps/www/content/docs/installation/remix.mdx
+
+```bash
+npx create-remix@latest my-app
+```
+
+---
+TITLE: Defining Registry Item Types for Component Customization
+DESCRIPTION: Defines the `type` property within `registry-item.json` to specify the type of registry item, influencing its resolution and target path within a project. It supports types like `registry:block`, `registry:component`, `registry:lib`, `registry:hook`, `registry:ui`, `registry:page`, `registry:file`, `registry:style`, `registry:theme`, and `registry:item`, enabling customization and organization of components and files.
+SOURCE: /apps/v4/content/docs/registry/registry-item-json.mdx
+
+```json
+{
+"type": "registry:block"
+}
+```
+
+---
+TITLE: Configuring Tailwind Base Color in `components.json`
+DESCRIPTION: Configures the `tailwind.baseColor` property within the `components.json` file, which defines the default color palette for components. This setting, which accepts values like `gray`, `neutral`, `slate`, `stone`, or `zinc`, is crucial for establishing the initial color scheme and cannot be altered after project initialization.
+SOURCE: /apps/www/content/docs/components-json.mdx
+
+```json
+{
+"tailwind": {
+"baseColor": "gray" | "neutral" | "slate" | "stone" | "zinc"
+}
+}
+```
+
+---
+TITLE: Installing Context Menu Component with Shadcn UI
+DESCRIPTION: Demonstrates how to install the `context-menu` component using either the CLI (`npx shadcn@latest add context-menu`) or manually by installing the `@radix-ui/react-context-menu` dependency and copying the component source. This allows users to add context menus to their Shadcn UI projects.
+SOURCE: /apps/v4/content/docs/components/context-menu.mdx
+
+```bash
+npx shadcn@latest add context-menu
+```
+
+```bash
+npm install @radix-ui/react-context-menu
+```
+
+---
+TITLE: Creating Blocks in the Registry
+DESCRIPTION: Illustrates how to create a new block within the `apps/www/registry/new-york/blocks` directory, ensuring the folder is named in kebab-case under `new-york`. This process is essential for adding reusable components or complex dashboards to the application.
+SOURCE: /apps/v4/content/docs/(root)/blocks.mdx
+
+```txt
+apps
+└── www
+└── registry
+└── new-york
+└── blocks
+└── dashboard-01
+```
+
+---
+TITLE: Using the Switch Component
+DESCRIPTION: Demonstrates basic usage of the `Switch` component. Import the `Switch` from `@/components/ui/switch` and render it in your application.
+SOURCE: /apps/v4/content/docs/components/switch.mdx
+
+```tsx
+import { Switch } from "@/components/ui/switch"
+```
+
+```tsx
+<Switch />
+```
+
+---
+TITLE: Installing Accordion Component with shadcn-ui
+DESCRIPTION: Demonstrates how to install the `Accordion` component using either the CLI with `npx shadcn@latest add accordion` or manually by installing the `@radix-ui/react-accordion` dependency, copying the component source, and updating the `tailwind.config.js` file to include necessary animations for accordion functionality.
+SOURCE: /apps/www/content/docs/components/accordion.mdx
+
+```bash
+npx shadcn@latest add accordion
+```
+
+```bash
+npm install @radix-ui/react-accordion
+```
+
+---
+TITLE: Composing Charts with Recharts Components
+DESCRIPTION: Illustrates composing charts using `Recharts` components within a custom `ChartContainer`. This approach avoids abstraction lock-in, allowing direct upgrades to new `Recharts` versions and customization using components like `ChartTooltipContent`.
+SOURCE: /apps/www/content/docs/components/chart.mdx
+
+```tsx
+import { Bar, BarChart } from "recharts"
+
+import { ChartContainer, ChartTooltipContent } from "@/components/ui/charts"
+
+export function MyChart() {
+return (
+<ChartContainer>
+<BarChart data={data}>
+<Bar dataKey="value" />
+<ChartTooltip content={<ChartTooltipContent />} />
+</BarChart>
+</ChartContainer>
+)
+}
+```
+
+---
+TITLE: Installing Registry Items Using the Shadcn CLI
+DESCRIPTION: Demonstrates how to install registry items using the `shadcn` CLI with the `add` command and a URL. This allows developers to quickly add pre-built components and utilities from a registry to their projects, streamlining development and promoting consistency.
+SOURCE: /apps/v4/content/docs/registry/getting-started.mdx
+
+```bash
+npx shadcn@latest add http://localhost:3000/r/hello-world.json
+```
+
+---
+TITLE: Installing the Badge Component with Shadcn UI
+DESCRIPTION: Demonstrates installing the `Badge` component in a Shadcn UI project using either the CLI with `npx shadcn@latest add badge` or a manual approach involving copying the component source code (`components/ui/badge.tsx`) and updating import paths. This allows developers to quickly integrate and customize badges for UI elements.
+SOURCE: /apps/v4/content/docs/components/badge.mdx
+
+```bash
+npx shadcn@latest add badge
+```
+
+---
+TITLE: Creating Theme Action Route with Remix Themes
+DESCRIPTION: Implements an action route `action.set-theme.ts` using `createThemeAction` from `remix-themes` to store the preferred theme in session storage. This route is used when the user changes the theme, ensuring persistence across sessions.
+SOURCE: /apps/www/content/docs/dark-mode/remix.mdx
+
+```tsx
+import { createThemeAction } from "remix-themes"
+
+import { themeSessionResolver } from "./sessions.server"
+
+export const action = createThemeAction(themeSessionResolver)
+```
+
+---
+TITLE: Configuring Component Aliases in `components.json`
+DESCRIPTION: Configures the `@/components` alias within the `components.json` file, enabling the CLI to correctly place generated components based on the `paths` configuration in `tsconfig.json` or `jsconfig.json`. This setup ensures proper component resolution and import paths throughout the project, requiring the `src` directory to be included under `paths` if used.
+SOURCE: /apps/v4/content/docs/(root)/components-json.mdx
+
+```json
+{
+"aliases": {
+"components": "@/components"
+}
+}
+```
+
+---
+TITLE: Implementing a Carousel Component with React
+DESCRIPTION: Demonstrates the implementation of a `Carousel` component using `CarouselContent`, `CarouselItem`, `CarouselPrevious`, and `CarouselNext` from the `@/components/ui/carousel` library. This setup allows for creating a basic carousel interface with navigation controls in a React application.
+SOURCE: /apps/www/content/docs/components/carousel.mdx
+
+```tsx
+import {
+Carousel,
+CarouselContent,
+CarouselItem,
+CarouselNext,
+CarouselPrevious,
+} from "@/components/ui/carousel"
+```
+
+```tsx
+<Carousel>
+<CarouselContent>
+<CarouselItem>...</CarouselItem>
+<CarouselItem>...</CarouselItem>
+<CarouselItem>...</CarouselItem>
+</CarouselContent>
+<CarouselPrevious />
+<CarouselNext />
+</Carousel>
+```
+
+---
+TITLE: Configuring TSX Component Support in components.json
+DESCRIPTION: Configures the `tsx` option within `components.json` to enable or disable TypeScript component support. Setting `tsx` to `false` allows the use of JavaScript components with the `.jsx` extension, providing flexibility in component development.
+SOURCE: /apps/v4/content/docs/(root)/components-json.mdx
+
+```json
+{
+"tsx": `true` | `false`
+}
+```
+
+---
+TITLE: Controlling Sidebar `open` State with `onOpenChange`
+DESCRIPTION: Demonstrates controlling the sidebar's visibility using the `open` and `onOpenChange` props within the `SidebarProvider`. This approach allows external components to manage the sidebar's state, providing greater flexibility and integration capabilities.
+SOURCE: /apps/www/content/docs/components/sidebar.mdx
+
+```tsx
+export function AppSidebar() {
+const [open, setOpen] = React.useState(false)
+
+return (
+<SidebarProvider open={open} onOpenChange={setOpen}>
+<Sidebar />
+</SidebarProvider>
+)
+}
+```
+
+---
+TITLE: Creating a New React Project with Vite
+DESCRIPTION: Demonstrates creating a new React project using `vite` with the `React + TypeScript` template. This allows developers to quickly scaffold a new React application with TypeScript support, providing a solid foundation for building complex user interfaces.
+SOURCE: /apps/www/content/docs/installation/vite.mdx
+
+```bash
+npm create vite@latest
+```
+
+---
+TITLE: Handling React 19 Peer Dependencies with npm
+DESCRIPTION: Illustrates how to handle peer dependency issues when using React 19 with `shadcn/ui` and npm. It explains the prompts displayed during `npx shadcn@latest init -d` and suggests using `--force` or `--legacy-peer-deps` to resolve installation problems.
+SOURCE: /apps/www/content/docs/react-19.mdx
+
+```bash
+It looks like you are using React 19.
+Some packages may fail to install due to peer dependency issues (see https://ui.shadcn.com/react-19).
+
+? How would you like to proceed? › - Use arrow-keys. Return to submit.
+❯   Use --force
+Use --legacy-peer-deps
+```
+
+---
+TITLE: Styling Components: Configuring the `style` Property
+DESCRIPTION: Configures the `style` property within `components.json` to define the visual theme of components; the `style` property, once initialized, cannot be changed. The `new-york` style is recommended as the `default` style has been deprecated.
+SOURCE: /apps/v4/content/docs/(root)/components-json.mdx
+
+```json
+{
+"style": "new-york"
+}
+```
+
+---
+TITLE: Configuring Tailwind Theme in Registry Item JSON
+DESCRIPTION: Configures the `tailwind` property within a `registry-item.json` file to customize the Tailwind theme, including colors, keyframes, and animations. This approach is deprecated in favor of `cssVars.theme` for Tailwind v4 projects, but demonstrates how to extend the default Tailwind configuration using the `config.theme.extend` property.
+SOURCE: /apps/www/content/docs/registry/registry-item-json.mdx
+
+```json
+{
+"tailwind": {
+"config": {
+"theme": {
+"extend": {
+"colors": {
+"brand": "hsl(var(--brand))"
+},
+"keyframes": {
+"wiggle": {
+"0%, 100%": { "transform": "rotate(-3deg)" },
+"50%": { "transform": "rotate(3deg)" }
+}
+},
+"animation": {
+"wiggle": "wiggle 1s ease-in-out infinite"
+}
+}
+}
+}
+}
+}
+```
+
+---
+TITLE: Installing the Switch Component
+DESCRIPTION: Demonstrates installing the `Switch` component using either the CLI with `npx shadcn@latest add switch` or manually by installing the `@radix-ui/react-switch` dependency and copying the component source code. This allows users to integrate the `Switch` component into their projects.
+SOURCE: /apps/www/content/docs/components/switch.mdx
+
+```bash
+npx shadcn@latest add switch
+```
+
+```bash
+npm install @radix-ui/react-switch
+```
+
+---
+TITLE: Implementing Sidebar with SidebarProvider and AppSidebar
+DESCRIPTION: Demonstrates implementing a sidebar using the `SidebarProvider`, `SidebarTrigger`, and `AppSidebar` components. This setup allows for a consistent sidebar implementation across the application, providing a structured layout with header, content, and footer sections.
+SOURCE: /apps/www/content/docs/components/sidebar.mdx
+
+```tsx
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+return (
+<SidebarProvider>
+<AppSidebar />
+<main>
+<SidebarTrigger />
+{children}
+</main>
+</SidebarProvider>
+)
+}
+```
+
+```tsx
+import {
+Sidebar,
+SidebarContent,
+SidebarFooter,
+SidebarGroup,
+SidebarHeader,
+} from "@/components/ui/sidebar"
+
+export function AppSidebar() {
+return (
+<Sidebar>
+<SidebarHeader />
+<SidebarContent>
+<SidebarGroup />
+<SidebarGroup />
+</SidebarContent>
+<SidebarFooter />
+</Sidebar>
+)
+}
+```
+
+---
+TITLE: Initializing Project with `shadcn-ui` CLI
+DESCRIPTION: Initializes a new project using the `shadcn-ui` CLI with the command `npx shadcn@canary init`. This creates a `components.json` file in the project root and configures CSS variables within `app/styles/app.css`, setting up the basic `shadcn-ui` environment.
+SOURCE: /apps/www/content/docs/installation/tanstack.mdx
+
+```bash
+npx shadcn@canary init
+```
+
+---
+TITLE: Deprecating `tailwindcss-animate` in Favor of `tw-animate-css`
+DESCRIPTION: Details the deprecation of the `tailwindcss-animate` package and its replacement with `tw-animate-css`. It outlines the migration steps for existing projects, including removing the old package and installing and importing the new `tw-animate-css` package in `globals.css`.
+SOURCE: /apps/www/content/docs/tailwind-v4.mdx
+
+```diff
+- @plugin 'tailwindcss-animate';
++ @import "tw-animate-css";
+```
+
+---
+TITLE: Defining Registry Item Files with `registry-item.json`
+DESCRIPTION: Defines the `files` property within `registry-item.json` for specifying registry item files, including their `path`, `type`, and optional `target`. The `target` property is required for `registry:page` and `registry:file` types, indicating where the file should be placed in a project, often determined by the project's `components.json`.
+SOURCE: /apps/www/content/docs/registry/registry-item-json.mdx
+
+```json
+{
+"files": [
+{
+"path": "registry/new-york/hello-world/page.tsx",
+"type": "registry:page",
+"target": "app/hello/page.tsx"
+},
+{
+"path": "registry/new-york/hello-world/hello-world.tsx",
+"type": "registry:component"
+},
+{
+"path": "registry/new-york/hello-world/use-hello-world.ts",
+"type": "registry:hook"
+},
+{
+"path": "registry/new-york/hello-world/.env",
+"type": "registry:file",
+"target": "~/.env"
+}
+]
+}
+```
+
+---
+TITLE: Implementing SidebarMenu for Navigation in React
+DESCRIPTION: Demonstrates the implementation of a `SidebarMenu` component within a `SidebarGroup` to create a navigation menu in a React application. The `SidebarMenu` component utilizes `SidebarMenuItem`, `SidebarMenuButton`, and other related components to render a list of interactive menu items, enhancing user experience and site navigation.
+SOURCE: /apps/www/content/docs/components/sidebar.mdx
+
+```tsx
+<Sidebar>
+<SidebarContent>
+<SidebarGroup>
+<SidebarGroupLabel>Projects</SidebarGroupLabel>
+<SidebarGroupContent>
+<SidebarMenu>
+{projects.map((project) => (
+<SidebarMenuItem key={project.name}>
+<SidebarMenuButton asChild>
+<a href={project.url}>
+<project.icon />
+<span>{project.name}</span>
+</a>
+</SidebarMenuButton>
+</SidebarMenuItem>
+))}
+</SidebarMenu>
+</SidebarGroupContent>
+</SidebarGroup>
+</SidebarContent>
+</Sidebar>
+```
+
+---
+TITLE: Installing Button Component with CLI or Manual
+DESCRIPTION: Demonstrates installing the `button` component using either the CLI with `npx shadcn@latest add button` or manually by installing `@radix-ui/react-slot`, copying the `button.tsx` component, and updating import paths. This allows developers to quickly integrate a styled button component into their projects.
+SOURCE: /apps/v4/content/docs/components/button.mdx
+
+```bash
+npx shadcn@latest add button
+```
+
+```bash
+npm install @radix-ui/react-slot
+```
+
+---
+TITLE: Initializing shadcn-ui with the CLI
+DESCRIPTION: Runs the `shadcn-ui` CLI `init` command to set up a new project. This command automates the initial configuration, making it easier to start using `shadcn-ui` components in your application.
+SOURCE: /apps/www/content/docs/installation/react-router.mdx
+
+```bash
+npx shadcn@latest init
+```
+
+---
+TITLE: Installing Form Component with CLI or Manually
+DESCRIPTION: Demonstrates installing the `form` component using either the CLI with `npx shadcn@latest add form` or manually by installing `@radix-ui/react-label`, `@radix-ui/react-slot`, `react-hook-form`, `@hookform/resolvers`, and `zod` dependencies, then copying the component source into your project.
+SOURCE: /apps/www/content/docs/components/form.mdx
+
+```bash
+npx shadcn@latest add form
+```
+
+```bash
+npm install @radix-ui/react-label @radix-ui/react-slot react-hook-form @hookform/resolvers zod
+```
+
+---
+TITLE: Implementing Data Table Pagination in React
+DESCRIPTION: Implements pagination controls for data tables using the `DataTablePagination` component. This component allows users to navigate through data sets, select page sizes, and view selection counts, enhancing the user experience in data-rich applications built with React.
+SOURCE: /apps/www/content/docs/components/data-table.mdx
+
+```tsx
+<DataTablePagination table={table} />
+```
+
+---
+TITLE: Updating Dependencies for shadcn/ui Tailwind v4 Project
+DESCRIPTION: Updates project dependencies including `@radix-ui/*`, `cmdk`, `lucide-react`, `recharts`, `tailwind-merge`, and `clsx` to their latest versions using `pnpm`. This ensures compatibility with Tailwind v4 and leverages the latest features and bug fixes in the `shadcn/ui` ecosystem.
+SOURCE: /apps/v4/content/docs/(root)/tailwind-v4.mdx
+
+```bash
+pnpm up "@radix-ui/*" cmdk lucide-react recharts tailwind-merge clsx --latest
+```
+
+---
+TITLE: Migrating Input-OTP to Composition API
+DESCRIPTION: Illustrates migrating the `input-otp` component from the `render` prop pattern to the composition API, using `OTPInput`, `OTPInputContext`, `InputOTPSlot`, and `InputOTPSeparator`. This change provides an alternative way to customize the OTP input slots and separator elements.
+SOURCE: /apps/v4/content/docs/components/input-otp.mdx
+
+```bash
+npm install input-otp@latest
+```
+
+```plaintext
+<Step>Then replace the `render` prop in your code.</Step>  
+```
+
+---
+TITLE: Downgrading React to Version 18 for Compatibility
+DESCRIPTION: Demonstrates how to downgrade the `react` and `react-dom` packages to version 18 using `npm i react@18 react-dom@18` to resolve compatibility issues with other dependencies. This approach allows you to use older packages while waiting for updates, but requires thorough testing to prevent regressions.
+SOURCE: /apps/www/content/docs/react-19.mdx
+
+```bash
+npm i react@18 react-dom@18
+```
+
+---
+TITLE: Documenting Registry Items Using `docs` Field
+DESCRIPTION: Illustrates the use of the `docs` field within a `registry-item.json` file to provide custom documentation or messages when installing registry items via the CLI. This allows developers to display important information, such as environment variable requirements, directly to users during the installation process.
+SOURCE: /apps/www/content/docs/registry/registry-item-json.mdx
+
+```json
+{
+"docs": "Remember to add the FOO_BAR environment variable to your .env file."
+}
+```
+
+---
+TITLE: Creating a `registry.json` File for Component Registration
+DESCRIPTION: Defines the structure of a `registry.json` file, used to register components within a project, supporting frameworks like Next.js, Vite, and Vue. This file conforms to the registry schema specification and enables component discovery and management.
+SOURCE: /apps/v4/content/docs/registry/getting-started.mdx
+
+```json
+{
+"$schema": "https://ui.shadcn.com/schema/registry.json",
+"name": "acme",
+"homepage": "https://acme.com",
+"items": [
+// ...
+]
+}
+```
+
+---
+TITLE: Customizing Chart Legend Names Using `nameKey`
+DESCRIPTION: Demonstrates how to customize chart legend names using the `nameKey` prop within the `ChartLegendContent` component. This allows developers to specify a custom key from the data source (e.g., `browser`) to be used for displaying legend labels, providing more control over the legend's appearance and readability.
+SOURCE: /apps/v4/content/docs/components/chart.mdx
+
+```tsx
+const chartData = [
+{ browser: "chrome", visitors: 187, fill: "var(--color-chrome)" },
+{ browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+]
+
+const chartConfig = {
+chrome: {
+label: "Chrome",
+color: "hsl(var(--chart-1))",
+},
+safari: {
+label: "Safari",
+color: "hsl(var(--chart-2))",
+},
+} satisfies ChartConfig
+```
+
+```tsx
+<ChartLegend content={<ChartLegendContent nameKey="browser" />} />
+```
+
+---
+TITLE: Defining Base Colors with Zinc Theme
+DESCRIPTION: Defines the base color palette using `oklch` color space for the Zinc theme, including light and dark modes. This configuration provides a consistent visual style across the application, enhancing user experience and brand identity.
+SOURCE: /apps/v4/content/docs/(root)/theming.mdx
+
+```css
+:root {
+--radius: 0.625rem;
+--background: oklch(1 0 0);
+--foreground: oklch(0.141 0.005 285.823);
+--card: oklch(1 0 0);
+--card-foreground: oklch(0.141 0.005 285.823);
+--popover: oklch(1 0 0);
+--popover-foreground: oklch(0.141 0.005 285.823);
+--primary: oklch(0.21 0.006 285.885);
+--primary-foreground: oklch(0.985 0 0);
+--secondary: oklch(0.967 0.001 286.375);
+--secondary-foreground: oklch(0.21 0.006 285.885);
+--muted: oklch(0.967 0.001 286.375);
+--muted-foreground: oklch(0.552 0.016 285.938);
+--accent: oklch(0.967 0.001 286.375);
+--accent-foreground: oklch(0.21 0.006 285.885);
+--destructive: oklch(0.577 0.245 27.325);
+--border: oklch(0.92 0.004 286.32);
+--input: oklch(0.92 0.004 286.32);
+--ring: oklch(0.705 0.015 286.067);
+--chart-1: oklch(0.646 0.222 41.116);
+--chart-2: oklch(0.6 0.118 184.704);
+--chart-3: oklch(0.398 0.07 227.392);
+--chart-4: oklch(0.828 0.189 84.429);
+--chart-5: oklch(0.769 0.188 70.08);
+--sidebar: oklch(0.985 0 0);
+--sidebar-foreground: oklch(0.141 0.005 285.823);
+--sidebar-primary: oklch(0.21 0.006 285.885);
+--sidebar-primary-foreground: oklch(0.985 0 0);
+--sidebar-accent: oklch(0.967 0.001 286.375);
+--sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+--sidebar-border: oklch(0.92 0.004 286.32);
+--sidebar-ring: oklch(0.705 0.015 286.067);
+}
+
+.dark {
+--background: oklch(0.141 0.005 285.823);
+--foreground: oklch(0.985 0 0);
+--card: oklch(0.21 0.006 285.885);
+--card-foreground: oklch(0.985 0 0);
+--popover: oklch(0.21 0.006 285.885);
+--popover-foreground: oklch(0.985 0 0);
+--primary: oklch(0.92 0.004 286.32);
+--primary-foreground: oklch(0.21 0.006 285.885);
+--secondary: oklch(0.274 0.006 286.033);
+--secondary-foreground: oklch(0.985 0 0);
+--muted: oklch(0.274 0.006 286.033);
+--muted-foreground: oklch(0.705 0.015 286.067);
+--accent: oklch(0.274 0.006 286.033);
+--accent-foreground: oklch(0.985 0 0);
+--destructive: oklch(0.704 0.191 22.216);
+--border: oklch(1 0 0 / 10%);
+--input: oklch(1 0 0 / 15%);
+--ring: oklch(0.552 0.016 285.938);
+--chart-1: oklch(0.488 0.243 264.376);
+--chart-2: oklch(0.696 0.17 162.48);
+--chart-3: oklch(0.769 0.188 70.08);
+--chart-4: oklch(0.627 0.265 303.9);
+--chart-5: oklch(0.645 0.246 16.439);
+--sidebar: oklch(0.21 0.006 285.885);
+--sidebar-foreground: oklch(0.985 0 0);
+--sidebar-primary: oklch(0.488 0.243 264.376);
+--sidebar-primary-foreground: oklch(0.985 0 0);
+--sidebar-accent: oklch(0.274 0.006 286.033);
+--sidebar-accent-foreground: oklch(0.985 0 0);
+--sidebar-border: oklch(1 0 0 / 10%);
+--sidebar-ring: oklch(0.552 0.016 285.938);
+}
+```
+
+---
+TITLE: Adding Categories to the Block Registry
+DESCRIPTION: Defines how to add new categories to the block registry by modifying the `registryCategories` array in `apps/www/registry/registry-categories.ts`. This allows for better organization and discoverability of blocks within the registry.
+SOURCE: /apps/v4/content/docs/(root)/blocks.mdx
+
+```tsx
+export const registryCategories = [
+// ...
+{
+name: "Input",
+slug: "input",
+hidden: false,
+},
+]
+```
+
+---
+TITLE: Highlighting Words for Emphasis in Documentation
+DESCRIPTION: Illustrates how to draw attention to specific words or character sequences within documentation using code examples. The example demonstrates using `@floating-ui/react` for styling and provides context for registry block configurations and file structures.
+SOURCE: /apps/v4/content/docs/(root)/styleguide.mdx
+
+```tsx
+import { useFloating } from "@floating-ui/react"
+
+function MyComponent() {
+const { refs, floatingStyles } = useFloating()
+
+return (
+<>
+<div ref={refs.setReference} />
+<div ref={refs.setFloating} style={floatingStyles} />
+</>
+)
+}
+```
+
+```tsx
+export const blocks = [
+// ...
+{
+name: "dashboard-01",
+author: "shadcn (https://ui.shadcn.com)",
+title: "Dashboard",
+description: "A simple dashboard with a hello world component.",
+type: "registry:block",
+registryDependencies: ["input", "button", "card"],
+dependencies: ["zod"],
+files: [
+{
+path: "blocks/dashboard-01/page.tsx",
+type: "registry:page",
+target: "app/dashboard/page.tsx",
+},
+{
+path: "blocks/dashboard-01/components/hello-world.tsx",
+type: "registry:component",
+},
+{
+path: "blocks/dashboard-01/components/example-card.tsx",
+type: "registry:component",
+},
+{
+path: "blocks/dashboard-01/hooks/use-hello-world.ts",
+type: "registry:hook",
+},
+{
+path: "blocks/dashboard-01/lib/format-date.ts",
+type: "registry:lib",
+},
+],
+categories: ["dashboard"],
+},
+]
+```
+
+```txt
+apps
+└── web         # Your app goes here.
+├── app
+│   └── page.tsx
+├── components
+│   └── login-form.tsx
+├── components.json
+└── package.json
+packages
+└── ui          # Your components and dependencies are installed here.
+├── src
+│   ├── components
+│   │   └── button.tsx
+│   ├── hooks
+│   ├── lib
+│   │   └── utils.ts
+│   └── styles
+│       └── globals.css
+├── components.json
+└── package.json
+package.json
+turbo.json
+```
+
+```diff
+- @plugin 'tailwindcss-animate';
++ @import "tw-animate-css";
+```
+
+---
+TITLE: Defining Base CSS Styles for Shadcn UI
+DESCRIPTION: Defines base CSS styles within a `registry:style` item for Shadcn UI, demonstrating how to customize the default appearance of HTML elements like `h1` and `h2` by leveraging CSS layers and design tokens such as `--text-2xl` and `--text-xl`. This approach allows for consistent styling across the application.
+SOURCE: /apps/www/content/docs/registry/examples.mdx
+
+```json
+{
+"$schema": "https://ui.shadcn.com/schema/registry-item.json",
+"name": "custom-style",
+"type": "registry:style",
+"css": {
+"@layer base": {
+"h1": {
+"font-size": "var(--text-2xl)"
+},
+"h2": {
+"font-size": "var(--text-xl)"
+}
+}
+}
+}
+```
+
+---
+TITLE: Configuring MCP Cursor Integration for shadcn UI
+DESCRIPTION: Configures the `shadcn` MCP server within Cursor by adding it to the `.cursor/mcp.json` file, enabling code completion and component suggestions. This setup allows developers to leverage `shadcn` components directly within the Cursor IDE, streamlining UI development.
+SOURCE: /apps/v4/content/docs/(root)/mcp.mdx
+
+```json
+{
+"mcpServers": {
+"shadcn": {
+"command": "npx",
+"args": ["shadcn@latest", "mcp"]
+}
+}
+}
+```
+
+---
+TITLE: Styling Icons in `CommandItem` Component
+DESCRIPTION: Illustrates how to style icons within the `CommandItem` component by adding `gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0` classes to the `cva` call in `command.tsx`, ensuring proper icon sizing and pointer event handling. This enhances the visual appearance and user interaction of command items.
+SOURCE: /apps/www/content/docs/components/command.mdx
+
+```tsx
+const CommandItem = React.forwardRef<
+React.ElementRef<typeof CommandPrimitive.Item>,
+React.ComponentPropsWithoutRef<typeof CommandPrimitive.Item>
+>(({ className, ...props }, ref) => (
+<CommandPrimitive.Item
+ref={ref}
+className={cn(
+"... gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+className
+)}
+{...props}
+/>
+))
+```
+
+---
+TITLE: Implementing Collapsible SidebarGroup Component
+DESCRIPTION: Demonstrates how to implement a collapsible `SidebarGroup` component using the `Collapsible` component. This allows users to expand and collapse sections within the sidebar, improving navigation and organization of content.
+SOURCE: /apps/v4/content/docs/components/sidebar.mdx
+
+```tsx
+export function AppSidebar() {
+return (
+<Collapsible defaultOpen className="group/collapsible">
+<SidebarGroup>
+<SidebarGroupLabel asChild>
+<CollapsibleTrigger>
+Help
+<ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+</CollapsibleTrigger>
+</SidebarGroupLabel>
+<CollapsibleContent>
+<SidebarGroupContent />
+</CollapsibleContent>
+</SidebarGroup>
+</Collapsible>
+)
+}
+```
+
+---
+TITLE: Installing Tailwind CSS in Remix
+DESCRIPTION: Configures Tailwind CSS for use within a Remix application by installing the `tailwindcss` and `autoprefixer` packages. It also updates `postcss.config.js` and `remix.config.js` to enable Tailwind CSS processing during the build.
+SOURCE: /apps/v4/content/docs/installation/remix.mdx
+
+```bash
+npm install -D tailwindcss@latest autoprefixer@latest
+```
+
+```js
+export default {
+plugins: {
+tailwindcss: {},
+autoprefixer: {},
+},
+}
+```
+
+---
+TITLE: Implementing Collapsible Component with React
+DESCRIPTION: Demonstrates the usage of the `Collapsible`, `CollapsibleTrigger`, and `CollapsibleContent` components from the `@/components/ui/collapsible` library. This allows creating interactive collapsible sections in a React application, enhancing user experience by hiding and revealing content on demand.
+SOURCE: /apps/v4/content/docs/components/collapsible.mdx
+
+```tsx
+import {
+Collapsible,
+CollapsibleContent,
+CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+```
+
+```tsx
+<Collapsible>
+<CollapsibleTrigger>Can I use this in my project?</CollapsibleTrigger>
+<CollapsibleContent>
+Yes. Free to use for personal and commercial projects. No attribution
+required.
+</CollapsibleContent>
+</Collapsible>
+```
