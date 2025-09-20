@@ -1,5 +1,16 @@
 # FOCUS
+Start with what I don’t have now, a way to visualise the sheer volume of information changing in a codebase enviroment.
 
+- [ ]  Node graph of ade codebase
+    - [ ]  Mock the UI first
+    - [ ]  Do a dependancy graph extract to get more info
+    - [ ]  Try showing a file clicked in the graph
+    - [ ]  Does it work on tablet?
+    - [ ]  Could i put a AI chat floating window? That can “sticky” to side? That has a girl talking to you? I have the sprites
+
+
+------------------------
+# OLD
 # TODO
 - List out projects
 - Open a project
