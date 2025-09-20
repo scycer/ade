@@ -137,11 +137,44 @@ export class ClaudeCodeService {
       // Use the raw message - bypassPermissions mode handles everything
       const prompt = userMessage;
 
-      // Configure query options with CORRECT permission mode
-      // Use "bypassPermissions" to skip all permission checks
+      // Track tools executed via hooks (needs to be before queryOptions)
+      const toolsExecuted: any[] = [];
+
+      // Configure query options with bypassPermissions for unrestricted access
       const queryOptions: any = {
         model: this.model,
-        permissionMode: "bypassPermissions"  // This bypasses all permission prompts!
+        permissionMode: "bypassPermissions" as any,  // Full unrestricted access
+
+        // Add hooks to capture tool usage
+        hooks: {
+          preToolUse: async (toolName: string, args: any) => {
+            console.log(`🔧 [PreTool] About to use: ${toolName}`);
+            console.log(`📦 [PreTool] Args:`, args);
+
+            // Track the tool execution
+            toolsExecuted.push({
+              name: toolName,
+              input: args,
+              timestamp: Date.now()
+            });
+
+            // Call the onToolUse callback if provided
+            if (options.onToolUse) {
+              options.onToolUse(toolName, args);
+            }
+          },
+
+          postToolUse: async (toolName: string, result: any) => {
+            console.log(`✅ [PostTool] Completed: ${toolName}`);
+            console.log(`📄 [PostTool] Result:`, result?.substring ? result.substring(0, 200) : result);
+
+            // Update the tool execution with result
+            const toolExecution = toolsExecuted.find(t => t.name === toolName && !t.output);
+            if (toolExecution) {
+              toolExecution.output = result;
+            }
+          }
+        }
       };
 
       // Only add session ID if provided
@@ -158,8 +191,8 @@ export class ClaudeCodeService {
 
       let assistantResponse = "";
       let toolCalls: any[] = [];
-      let sessionCaptured = false;
       let costUsd = 0;
+      let intermediateMessages: string[] = [];
 
       try {
         // Execute the query and stream results
@@ -169,16 +202,15 @@ export class ClaudeCodeService {
           // Capture session ID from init message
           if (msg.type === "system" && (msg as any).subtype === "init") {
             this.currentSessionId = (msg as any).session_id || options.sessionId;
-            sessionCaptured = true;
           }
 
           // Handle partial messages for streaming
-          if (msg.type === "partial" && options.onPartialMessage) {
+          if ((msg as any).type === "partial" && options.onPartialMessage) {
             options.onPartialMessage((msg as any).content);
           }
 
           // Handle tool use notifications
-          if (msg.type === "tool_use") {
+          if ((msg as any).type === "tool_use") {
             const toolMsg = msg as any;
             if (options.onToolUse) {
               options.onToolUse(toolMsg.name, toolMsg.input);
@@ -196,20 +228,52 @@ export class ClaudeCodeService {
             };
           }
 
-          // Capture assistant's message
+          // Capture assistant's message - including intermediate ones
           if (msg.type === "assistant") {
             const msgContent = (msg as any).message || (msg as any);
+            let messageText = "";
+
             if (msgContent.content) {
               // Handle content array
               if (Array.isArray(msgContent.content)) {
-                const textContent = msgContent.content.find((c: any) => c.type === "text");
-                if (textContent) {
-                  assistantResponse = textContent.text;
+                // Look for both text AND tool_use blocks
+                for (const contentBlock of msgContent.content) {
+                  if (contentBlock.type === "text") {
+                    messageText = contentBlock.text;
+                  } else if (contentBlock.type === "tool_use") {
+                    // Found a tool use block!
+                    console.log(`🔧 FOUND TOOL USE: ${contentBlock.name}`);
+                    toolCalls.push({
+                      name: contentBlock.name,
+                      input: contentBlock.input,
+                      id: contentBlock.id
+                    });
+                    yield {
+                      type: "tool_use",
+                      tool: contentBlock.name,
+                      args: contentBlock.input,
+                      id: contentBlock.id
+                    };
+                  }
                 }
               } else if (typeof msgContent.content === "string") {
-                assistantResponse = msgContent.content;
+                messageText = msgContent.content;
               }
             }
+
+            // Collect all assistant messages
+            if (messageText) {
+              intermediateMessages.push(messageText);
+              // Keep updating the response with the latest message
+              assistantResponse = messageText;
+
+              // Yield intermediate assistant messages so they show in the UI
+              yield {
+                type: "assistant_intermediate",
+                content: messageText
+              };
+            }
+
             // Also capture tool calls from assistant message
             if (msgContent.tool_calls) {
               toolCalls = msgContent.tool_calls;
@@ -220,9 +284,17 @@ export class ClaudeCodeService {
           if (msg.type === "result") {
             const resultMsg = msg as any;
 
-            // Use result as response if we don't have one
-            if (!assistantResponse && resultMsg.result) {
-              assistantResponse = resultMsg.result;
+            // Combine all intermediate messages with final result
+            if (resultMsg.result) {
+              // If we have intermediate messages, combine them
+              if (intermediateMessages.length > 0) {
+                assistantResponse = intermediateMessages.join("\n\n") +
+                  (resultMsg.result !== intermediateMessages[intermediateMessages.length - 1]
+                    ? "\n\n" + resultMsg.result
+                    : "");
+              } else {
+                assistantResponse = resultMsg.result;
+              }
             }
 
             if (resultMsg.total_cost_usd) {
@@ -231,7 +303,6 @@ export class ClaudeCodeService {
 
             if (resultMsg.session_id) {
               this.currentSessionId = resultMsg.session_id;
-              sessionCaptured = true;
             }
 
             // Don't yield the SDK's result message - we'll create our own
@@ -267,7 +338,7 @@ export class ClaudeCodeService {
         response: assistantResponse || "No response generated",
         sessionId: this.currentSessionId,
         costUsd: costUsd,
-        toolsUsed: toolCalls
+        toolsUsed: toolsExecuted.length > 0 ? toolsExecuted : toolCalls  // Use hook-captured tools if available
       };
 
     } catch (error) {

@@ -47,6 +47,7 @@ export const apiRoutes = {
         let toolsUsed: any[] = [];
         let costUsd = 0;
         let newSessionId = sessionId;
+        let intermediateSteps: string[] = [];
 
         // Execute the conversation
         for await (const msg of service.conversation(message, {
@@ -54,14 +55,34 @@ export const apiRoutes = {
           allowFileOperations,
           workingDirectory: process.cwd(),
           onToolUse: (tool, args) => {
-            console.log(`Tool used: ${tool}`, args);
+            console.log(`🔧 Tool used: ${tool}`, args);
           }
         })) {
+          // Log all message types for debugging
+          if (msg.type === "assistant_intermediate") {
+            console.log(`💬 Intermediate: ${msg.content}`);
+            intermediateSteps.push(msg.content);
+          }
+
+          if (msg.type === "tool_use") {
+            const toolInfo = `🛠️ Used ${msg.tool}: ${JSON.stringify(msg.args).substring(0, 100)}...`;
+            console.log(toolInfo);
+            intermediateSteps.push(toolInfo);
+          }
+
           if (msg.type === "result") {
             response = msg.response;
             toolsUsed = msg.toolsUsed || [];
             costUsd = msg.costUsd || 0;
             newSessionId = msg.sessionId;
+
+            // Add tool usage to intermediate steps
+            if (toolsUsed.length > 0) {
+              toolsUsed.forEach((tool: any) => {
+                const toolStr = `🔧 ${tool.name}(${JSON.stringify(tool.input || {}).substring(0, 50)}...)`;
+                intermediateSteps.push(toolStr);
+              });
+            }
 
             // Store service for session continuity
             if (newSessionId) {
@@ -70,13 +91,21 @@ export const apiRoutes = {
           }
         }
 
+        // Log final response details
+        console.log(`\n📝 Final Response: ${response}`);
+        if (intermediateSteps.length > 0) {
+          console.log(`📊 Steps taken (${intermediateSteps.length}):`);
+          intermediateSteps.forEach((step, i) => console.log(`  ${i + 1}. ${step.substring(0, 100)}...`));
+        }
+
         return Response.json({
           success: true,
           response,
           sessionId: newSessionId,
           costUsd,
           model,
-          toolsUsed
+          toolsUsed,
+          intermediateSteps  // Include intermediate steps for the UI
         });
 
       } catch (error) {

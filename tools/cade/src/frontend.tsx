@@ -61,6 +61,20 @@ function App() {
       console.log("Response received:", data);
 
       if (data.success) {
+        // Show intermediate steps if available
+        if (data.intermediateSteps && data.intermediateSteps.length > 0) {
+          console.log("Intermediate steps:", data.intermediateSteps);
+
+          // Add a message showing what Claude is doing
+          const stepsMessage: Message = {
+            type: "system",
+            content: `📋 Steps performed:\n${data.intermediateSteps.map((step: string, i: number) =>
+              `${i + 1}. ${step}`).join('\n')}`,
+            timestamp: Date.now()
+          };
+          setMessages(prev => [...prev, stepsMessage]);
+        }
+
         // Add assistant response to chat
         const assistantMessage: Message = {
           type: "assistant",
@@ -75,16 +89,19 @@ function App() {
           setSessionId(data.sessionId);
         }
 
-        // Add tool use messages if any
+        // Add tool use messages with details if any
         if (data.toolsUsed && data.toolsUsed.length > 0) {
-          data.toolsUsed.forEach((tool: any) => {
-            const toolMessage: Message = {
-              type: "tool_use",
-              content: `🔧 Used tool: ${tool.name}`,
-              timestamp: Date.now()
-            };
-            setMessages(prev => [...prev, toolMessage]);
-          });
+          const toolDetails = data.toolsUsed.map((tool: any) => {
+            const args = JSON.stringify(tool.input || {}, null, 2);
+            return `🔧 ${tool.name}\n${args}`;
+          }).join('\n\n');
+
+          const toolMessage: Message = {
+            type: "system",
+            content: `📋 Tools Used:\n\n${toolDetails}`,
+            timestamp: Date.now()
+          };
+          setMessages(prev => [...prev, toolMessage]);
         }
       } else {
         // Add error message
@@ -174,20 +191,25 @@ function App() {
                   msg.type === "user" ? "ml-auto bg-blue-100" :
                   msg.type === "assistant" ? "mr-auto bg-white" :
                   msg.type === "tool_use" ? "mr-auto bg-yellow-50 text-sm" :
+                  msg.type === "system" ? "mr-auto bg-gray-100 text-sm border border-gray-300" :
                   "mr-auto bg-red-50"
                 } p-3 rounded-lg max-w-[80%] shadow-sm`}>
                   <div className={`text-xs font-semibold mb-1 ${
                     msg.type === "user" ? "text-blue-700" :
                     msg.type === "assistant" ? "text-green-700" :
                     msg.type === "tool_use" ? "text-yellow-700" :
+                    msg.type === "system" ? "text-gray-700" :
                     "text-gray-600"
                   }`}>
                     {msg.type === "user" ? "You" :
                      msg.type === "assistant" ? "Claude" :
                      msg.type === "tool_use" ? "Tool" :
+                     msg.type === "system" ? "📋 Actions" :
                      "System"}
                   </div>
-                  <div className="whitespace-pre-wrap break-words">
+                  <div className={`whitespace-pre-wrap break-words ${
+                    msg.type === "system" ? "font-mono text-xs" : ""
+                  }`}>
                     {msg.content}
                   </div>
                   {msg.toolCalls && msg.toolCalls.length > 0 && (
