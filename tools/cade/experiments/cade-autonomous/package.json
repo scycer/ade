@@ -1,0 +1,31 @@
+{
+  "name": "cade-autonomous",
+  "version": "1.0.0",
+  "description": "Claude Autonomous Development Environment - Run tasks from markdown files with full bypass permissions",
+  "main": "cade-agent.ts",
+  "scripts": {
+    "start": "bun cade-agent.ts",
+    "run-task": "bun cade-agent.ts",
+    "example:simple": "bun cade-agent.ts task.md",
+    "example:analysis": "bun cade-agent.ts tasks/example-analysis.md",
+    "example:refactor": "bun cade-agent.ts tasks/example-refactor.md",
+    "clean": "rm -rf cade-sessions/*.json"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-code": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "bun-types": "latest"
+  },
+  "keywords": [
+    "claude",
+    "autonomous",
+    "agent",
+    "ai",
+    "development",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT"
+}

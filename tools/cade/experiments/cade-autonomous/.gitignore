@@ -1,0 +1,14 @@
+# Session outputs
+cade-sessions/
+
+# Test outputs
+*.test.output
+test-bypass-output.txt
+
+# Generated files from tasks
+hello-cli.ts
+hello-cli.test.ts
+project-analysis.md
+
+# Node modules if installed locally
+node_modules/
