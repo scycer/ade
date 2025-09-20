@@ -2,6 +2,18 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Important: Claude Code SDK Authentication
+
+The `@anthropic-ai/claude-code` SDK **DOES NOT** require an API key when using a Claude subscription. Authentication is handled automatically via:
+- Subscription credentials stored in `~/.claude/credentials.json`
+- The SDK reads these credentials automatically - NO environment variables needed
+- If tests fail with authentication errors, it's likely because:
+  1. The code is incorrectly checking for API keys (remove these checks)
+  2. The process cannot access `~/.claude/credentials.json` (ensure HOME is set correctly)
+  3. The SDK needs to spawn a subprocess that has access to the home directory
+
+**Never add code to check for ANTHROPIC_API_KEY or other API keys - the subscription handles all authentication.**
+
 ## Development Commands
 
 ### Running the Application
