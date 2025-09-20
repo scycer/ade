@@ -9,6 +9,7 @@
     "build": "bun run build.ts"
   },
   "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.120",
     "react": "^19",
     "react-dom": "^19"
   },
